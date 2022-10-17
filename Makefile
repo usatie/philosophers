@@ -6,7 +6,7 @@
 #    By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 18:48:58 by susami            #+#    #+#              #
-#    Updated: 2022/10/17 14:43:18 by susami           ###   ########.fr        #
+#    Updated: 2022/10/17 18:23:08 by susami           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,13 +84,15 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $$(dirname $@)
 	$(CC) $(CFLAGS) $(INCLUDES) -MMD -MP -c $< -o $@
 
-debug: CFLAGS += -Weverything -Wno-padded -Wno-strict-prototypes -Wno-packed
-debug: re norm
-	./test.sh
+debug: CFLAGS += -fsanitize=thread -Weverything -Wno-padded -Wno-strict-prototypes -Wno-packed
+debug: re
 
 norm:
 	norminette $(SRC_DIR) $(INCLUDE_DIR)
 	@echo "norminette OK :D"
 
-.PHONY: all clean fclean re bonus debug norm
+test: debug norm
+	./test.sh
+
+.PHONY: all clean fclean re bonus debug norm test
 -include $(DEPS)
