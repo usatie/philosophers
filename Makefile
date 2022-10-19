@@ -6,7 +6,7 @@
 #    By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 18:48:58 by susami            #+#    #+#              #
-#    Updated: 2022/10/19 15:02:02 by susami           ###   ########.fr        #
+#    Updated: 2022/10/19 15:13:37 by susami           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,7 @@ SRCS		=	$(SRC_DIR)/init.c							\
 				$(SRC_DIR)/simulation.c						\
 				$(SRC_DIR)/time.c							\
 				$(SRC_DIR)/sleep.c							\
+				$(SRC_DIR)/argparse.c						\
 
 
 OBJ_DIR		=	objs

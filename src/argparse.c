@@ -1,44 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   argparse.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/17 18:16:33 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 15:13:21 by susami           ###   ########.fr       */
+/*   Created: 2022/10/19 15:13:06 by susami            #+#    #+#             */
+/*   Updated: 2022/10/19 15:13:20 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
 #include "philo.h"
 
-// TODO: pthread_xxxのerror handling
-
-static size_t	ft_strlen(const char *s)
+void	argparse(t_args *args, int argc, char *argv[])
 {
-	size_t	len;
-
-	len = 0;
-	while (s[len])
-		len++;
-	return (len);
-}
-
-void	err_exit(char *msg)
-{
-	write(2, msg, ft_strlen(msg));
-	exit(1);
-}
-
-int	main(int argc, char *argv[])
-{
-	t_env	e;
-
-	argparse(&e.args, argc, argv);
-	init_env(&e);
-	start_simulation(&e);
-	wait_simulation_ends(&e);
-	exit(0);
+	(void)argc;
+	(void)argv;
+	args->num_philo = 7;
+	args->time_to_die_ms = 700;
+	args->time_to_eat_ms = 300;
+	args->time_to_sleep_ms = 100;
+	args->max_eat = 10;
 }
