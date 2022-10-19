@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 23:21:17 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 23:39:34 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@
 # include <sys/time.h>
 # include <pthread.h>
 # include <stdbool.h>
-# define MAX_PHILO 200
+# ifndef MAX_PHILO
+#  define MAX_PHILO 200
+# endif
 
 typedef struct timeval		t_timeval;
 typedef struct s_fork		t_fork;

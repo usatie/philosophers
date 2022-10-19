@@ -6,7 +6,7 @@
 #    By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 18:48:58 by susami            #+#    #+#              #
-#    Updated: 2022/10/19 16:47:56 by susami           ###   ########.fr        #
+#    Updated: 2022/10/19 23:50:36 by susami           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,10 @@ NAME		=	philo
 
 CC			=	cc
 CFLAGS		=	-Wall -Werror -Wextra
+
+ifneq ($(MAX_PHILO),)
+CFLAGS		+= -D MAX_PHILO=$(MAX_PHILO)
+endif
 
 SRC_DIR		=	src
 

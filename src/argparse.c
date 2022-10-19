@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 15:13:06 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 18:47:24 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 23:57:12 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,16 @@
 #include <errno.h>
 #include "libftsubset.h"
 #include "philo.h"
+
+/*
+If stringizer macro is allowed by norminette, it's convenient.
+
+#define VAL(str) #str
+#define TOSTRING(str) VAL(str)
+
+This can be used like this.
+char *s = "between 2 to " TOSTRING(MAX_PHILO) ".\n";
+*/
 
 static bool	is_numeric(const char *s);
 static int	get_int(const char *s);
@@ -23,7 +33,7 @@ void	argparse(t_args *args, int argc, char *argv[])
 	if (argc < 5 || argc > 6)
 		usage_err();
 	args->num_philo = get_int(argv[1]);
-	if (args->num_philo < 2 || args->num_philo > 200)
+	if (args->num_philo < 2 || args->num_philo > MAX_PHILO)
 		usage_err();
 	args->time_to_die_ms = get_int(argv[2]);
 	args->time_to_eat_ms = get_int(argv[3]);
@@ -34,7 +44,7 @@ void	argparse(t_args *args, int argc, char *argv[])
 		args->max_eat = -1;
 	if (args->max_eat == 0)
 		usage_err();
-}	
+}
 
 void	usage_err(void)
 {
@@ -44,7 +54,8 @@ void	usage_err(void)
 		"time_to_sleep [number_of_times_each_philosopher_must_eat]\n"
 		"\n"
 		"DESCRIPTION:\n"
-		"  - number_of_philosophers is only valid between 2 to 200.\n"
+		"  - number_of_philosophers is valid between 2 to MAX_PHILO.\n"
+		"    (Default value for MAX_PHILO is 200.)\n"
 		"  - number_of_times_each_philosopher_must_eat must be non-zero\n"
 		"    value. When it is negative or not specified, the simulation\n"
 		"    does not end until someone dies.\n"
