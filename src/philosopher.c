@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:02:53 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 11:03:39 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 14:57:50 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,27 +64,34 @@ int	philo_eat(t_philo *philo)
 // readだけならmutexの必要なし
 int	philo_sleep(t_philo *philo)
 {
+	const int	time_to_eat_ms = philo->e->args.time_to_eat_ms;
+	const int	time_to_sleep_ms = philo->e->args.time_to_sleep_ms;
+
 	philo->state = PH_SLEEPING;
 	if (philo_log(philo, "is sleeping") < 0)
 		return (-1);
-	msleep_since(philo->last_eat_at, philo->e->args.time_to_eat_ms + philo->e->args.time_to_sleep_ms);
+	msleep_since(philo->last_eat_at, time_to_eat_ms + time_to_sleep_ms);
 	return (0);
 }
 
+// If N is odd, N = 2k + 1, initial usleep should be (k * id) / N
+// If N is even, N = 2k, initial usleep should be (k * id) / N
 int	philo_think(t_philo *philo)
 {
-	if (philo_log(philo, "is thinking") < 0)
-		return (-1);
-	philo->state = PH_THINKING;
+	const int	time_to_eat_ms = philo->e->args.time_to_eat_ms;
 	const int	n = philo->e->args.num_philo;
 	const int	k = philo->e->args.num_philo / 2;
 	const int	initial_slot = (k * philo->id) % n;
+
+	if (philo_log(philo, "is thinking") < 0)
+		return (-1);
+	philo->state = PH_THINKING;
 	if (philo->eat_count == 0)
 	{
-		msleep_since(philo->last_eat_at, philo->e->args.time_to_eat_ms * initial_slot / k);
+		msleep_since(philo->last_eat_at, time_to_eat_ms * initial_slot / k);
 	}
 	else
-		msleep_since(philo->last_eat_at, philo->e->args.time_to_eat_ms * n / k);
+		msleep_since(philo->last_eat_at, time_to_eat_ms * n / k);
 	return (0);
 }
 
