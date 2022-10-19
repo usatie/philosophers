@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 23:39:34 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 00:25:35 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int			timediff_msec(t_timeval start, t_timeval end);
 void		usleep_until(t_timeval t);
 void		msleep_since(t_timeval since, int milliseconds);
 int			philo_log(t_philo *philo, const char *msg, t_timeval *tp);
+void		philo_log_died_no_monitor_lock(t_philo *philo, t_timeval t);
 void		philo_log_died(t_philo *philo, t_timeval t);
 int			philo_eat(t_philo *philo);
 int			philo_sleep(t_philo *philo);
@@ -46,7 +47,7 @@ void		init_forks(t_env *e);
 void		init_philosophers(t_env *e);
 void		init_env(t_env *e);
 void		create_philosophers_threads(t_env *e);
-bool		is_philo_died(t_philo *philo, t_timeval *tp);
+bool		is_dead_no_philo_lock(t_philo *philo, t_timeval *tp);
 void		*monitor_func(void *arg);
 void		create_monitor_thread(t_env *e);
 void		cleanup_mutex(t_env *e);
@@ -81,7 +82,7 @@ struct s_philo {
 struct s_monitor {
 	pthread_t		tid;
 	pthread_mutex_t	mtx;
-	bool			is_died;
+	bool			is_dead;
 };
 
 struct s_args {

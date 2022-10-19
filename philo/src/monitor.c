@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:09:31 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 23:33:49 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 00:20:20 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 // the philosopher's mutex before calling it. Because it reads
 // `philo->last_eat_at` without locking mutex.
 // Populate the timestamp when philo's life is checked to tp if non-NULL.
-bool	is_philo_died(t_philo *philo, t_timeval *tp)
+bool	is_dead_no_philo_lock(t_philo *philo, t_timeval *tp)
 {
 	const int		time_to_die_ms = philo->e->args.time_to_die_ms;
 	const t_timeval	deadline = timeadd_msec(philo->last_eat_at, time_to_die_ms);
@@ -35,34 +35,32 @@ bool	is_philo_died(t_philo *philo, t_timeval *tp)
 	return (diff > 0);
 }
 
-// monitor.is_died is only written by monitor thread.
-// So reading it is thread safe.
-// (i.e.) Doesn't require mutex to read it.
 static bool	should_continue_simulation(t_env *e)
 {
 	t_timeval	now;
+	bool		is_dead;
 	bool		eating;
 	int			i;
 
+	is_dead = false;
 	eating = false;
 	i = 0;
-	while (!e->monitor.is_died && i < e->args.num_philo)
+	while (!is_dead && i < e->args.num_philo)
 	{
 		pthread_mutex_lock(&e->philosophers[i].mtx);
 		if (is_hungry(&e->philosophers[i]))
 		{
 			eating = true;
-			if (is_philo_died(&e->philosophers[i], &now))
+			if (is_dead_no_philo_lock(&e->philosophers[i], &now))
 			{
-				pthread_mutex_lock(&e->monitor.mtx);
 				philo_log_died(&e->philosophers[i], now);
-				pthread_mutex_unlock(&e->monitor.mtx);
+				is_dead = true;
 			}
 		}
 		pthread_mutex_unlock(&e->philosophers[i].mtx);
 		i++;
 	}
-	return (!e->monitor.is_died && eating);
+	return (!is_dead && eating);
 }
 
 void	*monitor_func(void *arg)

@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:58:12 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 23:33:56 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 00:25:27 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,12 @@ int	philo_log(t_philo *philo, const char *msg, t_timeval *tp)
 
 	error = 0;
 	pthread_mutex_lock(&philo->e->monitor.mtx);
-	if (!philo->e->monitor.is_died)
+	if (!philo->e->monitor.is_dead)
 	{
-		if (is_philo_died(philo, &now))
+		if (is_dead_no_philo_lock(philo, &now))
 		{
 			error = -1;
-			philo_log_died(philo, now);
+			philo_log_died_no_monitor_lock(philo, now);
 		}
 		else
 		{
@@ -48,16 +48,24 @@ int	philo_log(t_philo *philo, const char *msg, t_timeval *tp)
 
 // Only flush once
 // This function caller should lock monitor mutex before calling it.
-void	philo_log_died(t_philo *philo, t_timeval t)
+void	philo_log_died_no_monitor_lock(t_philo *philo, t_timeval t)
 {
 	static bool	flushed = false;
 	int			ts;
 
-	philo->e->monitor.is_died = true;
+	philo->e->monitor.is_dead = true;
 	if (!flushed)
 	{
 		ts = timediff_msec(philo->e->started_at, t);
 		printf("%d %d died\n", ts, philo->id);
 		flushed = true;
 	}
+}
+
+// Only flush once
+void	philo_log_died(t_philo *philo, t_timeval t)
+{
+	pthread_mutex_lock(&philo->e->monitor.mtx);
+	philo_log_died_no_monitor_lock(philo, t);
+	pthread_mutex_unlock(&philo->e->monitor.mtx);
 }
