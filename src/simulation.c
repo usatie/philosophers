@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:10:57 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 11:12:03 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 14:45:45 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,14 @@ void	start_simulation(t_env *e)
 
 void	create_philosophers_threads(t_env *e)
 {
-	int	i;
+	int		i;
+	t_philo	*philo;
 
 	i = 0;
 	while (i < e->args.num_philo)
 	{
-		pthread_create(&e->philosophers[i].tid, NULL, philosopher_func, &e->philosophers[i]);
-		//pthread_detach(e->philosophers[i].tid);
+		philo = &e->philosophers[i];
+		pthread_create(&philo->tid, NULL, philosopher_func, philo);
 		i++;
 	}
 }
