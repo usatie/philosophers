@@ -6,13 +6,16 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 10:11:46 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 11:12:26 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
+# include <sys/time.h>
+# include <pthread.h>
+# include <stdbool.h>
 # define MAX_PHILO 200
 
 typedef struct timeval		t_timeval;
@@ -23,6 +26,7 @@ typedef struct s_args		t_args;
 typedef struct s_env		t_env;
 
 int			get_timestamp_ms(t_timeval since);
+void		gettimeofday_rounddown_ms(t_timeval *t);
 t_timeval	timeadd_msec(t_timeval t, int interval_msec);
 suseconds_t	timediff_usec(t_timeval start, t_timeval end);
 void		usleep_until(t_timeval t);
@@ -36,12 +40,14 @@ void		err_exit(char *msg) __attribute__((noreturn));
 void		*philosopher_func(void *arg);
 void		init_forks(t_env *e);
 void		init_philosophers(t_env *e);
+void		init_env(t_env *e);
 void		create_philosophers_threads(t_env *e);
-void		*monitor_philosophers(void *arg);
+void		*monitor_func(void *arg);
 void		create_monitor_thread(t_env *e);
 void		cleanup_mutex(t_env *e);
 void		argparse(t_args *args, int argc, char *argv[]);
 void		wait_simulation_ends(t_env *e);
+void		start_simulation(t_env *e);
 
 struct s_fork {
 	pthread_mutex_t	mtx;
