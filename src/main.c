@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 18:16:33 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 11:12:33 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 14:26:20 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ void	argparse(t_args *args, int argc, char *argv[])
 {
 	(void)argc;
 	(void)argv;
-	args->num_philo = 199;
-	args->time_to_die_ms = 1999;
-	args->time_to_eat_ms = 990;
-	args->time_to_sleep_ms = 1000;
+	args->num_philo = 7;
+	args->time_to_die_ms = 700;
+	args->time_to_eat_ms = 300;
+	args->time_to_sleep_ms = 100;
 	args->max_eat = 10;
 }
 
