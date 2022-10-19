@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 11:12:26 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 16:35:27 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void		create_philosophers_threads(t_env *e);
 void		*monitor_func(void *arg);
 void		create_monitor_thread(t_env *e);
 void		cleanup_mutex(t_env *e);
+void		usage_err(void);
 void		argparse(t_args *args, int argc, char *argv[]);
 void		wait_simulation_ends(t_env *e);
 void		start_simulation(t_env *e);

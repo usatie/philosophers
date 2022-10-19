@@ -6,7 +6,7 @@
 #    By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 18:48:58 by susami            #+#    #+#              #
-#    Updated: 2022/10/19 15:13:37 by susami           ###   ########.fr        #
+#    Updated: 2022/10/19 16:39:01 by susami           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,11 @@ SRCS		=	$(SRC_DIR)/init.c							\
 				$(SRC_DIR)/time.c							\
 				$(SRC_DIR)/sleep.c							\
 				$(SRC_DIR)/argparse.c						\
+				$(SRC_DIR)/libftsubset/ft_isdigit.c			\
+				$(SRC_DIR)/libftsubset/ft_isspace.c			\
+				$(SRC_DIR)/libftsubset/ft_strlen.c			\
+				$(SRC_DIR)/libftsubset/ft_strncmp.c			\
+				$(SRC_DIR)/libftsubset/ft_strtol.c			\
 
 
 OBJ_DIR		=	objs
