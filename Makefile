@@ -6,7 +6,7 @@
 #    By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 18:48:58 by susami            #+#    #+#              #
-#    Updated: 2022/10/19 16:39:01 by susami           ###   ########.fr        #
+#    Updated: 2022/10/19 16:47:56 by susami           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -97,7 +97,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $$(dirname $@)
 	$(CC) $(CFLAGS) $(INCLUDES) -MMD -MP -c $< -o $@
 
-debug: CFLAGS += -fsanitize=thread -Weverything -Wno-padded -Wno-strict-prototypes -Wno-packed
+debug: CFLAGS += -fsanitize=thread -Weverything -Wno-padded -Wno-strict-prototypes -Wno-packed -Wno-cast-qual
 debug: re
 
 norm:

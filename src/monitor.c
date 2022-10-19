@@ -6,16 +6,18 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:09:31 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 14:43:20 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 21:09:27 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include "philo.h"
 
-#define MONITOR_INTERVAL_USEC 1000
+#include <stdio.h>
 
-static bool	is_philo_died(t_philo *philo)
+#define MONITOR_INTERVAL_USEC 500
+
+bool	is_philo_died(t_philo *philo, t_timeval *t)
 {
 	const int		time_to_die_ms = philo->e->args.time_to_die_ms;
 	const t_timeval	deadline = timeadd_msec(philo->last_eat_at, time_to_die_ms);
@@ -25,13 +27,15 @@ static bool	is_philo_died(t_philo *philo)
 
 	monitor = &philo->e->monitor;
 	gettimeofday_rounddown_ms(&now);
+	if (t != NULL)
+		*t = now;
 	diff = timediff_usec(deadline, now);
 	if (diff > 0)
 	{
 		pthread_mutex_lock(&monitor->mtx);
 		monitor->is_died = true;
 		pthread_mutex_unlock(&monitor->mtx);
-		philo_log(philo, "died");
+		philo_log_died(philo);
 		return (true);
 	}
 	return (false);
@@ -52,7 +56,7 @@ static bool	should_continue_simulation(t_env *e)
 		if (is_hungry(&e->philosophers[i]))
 		{
 			eating = true;
-			if (is_philo_died(&e->philosophers[i]))
+			if (is_philo_died(&e->philosophers[i], NULL))
 				died = true;
 		}
 		pthread_mutex_unlock(&e->philosophers[i].mtx);

@@ -6,14 +6,12 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:58:12 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 11:02:01 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 21:16:14 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include "philo.h"
-
-static int	ft_strcmp(const char *s1, const char *s2);
 
 int	philo_log(t_philo *philo, char *msg)
 {
@@ -22,7 +20,7 @@ int	philo_log(t_philo *philo, char *msg)
 
 	error = 0;
 	pthread_mutex_lock(&philo->e->monitor.mtx);
-	if (!philo->e->monitor.is_died || ft_strcmp(msg, "died") == 0)
+	if (!philo->e->monitor.is_died)
 	{
 		ts = get_timestamp_ms(philo->e->started_at);
 		printf("%d %d %s\n", ts, philo->id, msg);
@@ -33,20 +31,18 @@ int	philo_log(t_philo *philo, char *msg)
 	return (error);
 }
 
-static int	ft_strcmp(const char *s1, const char *s2)
+// Only flush once
+void	philo_log_died(t_philo *philo)
 {
-	size_t				i;
-	const unsigned char	*u1;
-	const unsigned char	*u2;
+	static bool	flushed = false;
+	int			ts;
 
-	u1 = (const unsigned char *)s1;
-	u2 = (const unsigned char *)s2;
-	i = 0;
-	while (u1[i] || u2[i])
+	pthread_mutex_lock(&philo->e->monitor.mtx);
+	if (!flushed)
 	{
-		if (u1[i] != u2[i])
-			return (u2[i] - u1[i]);
-		i++;
+		ts = get_timestamp_ms(philo->e->started_at);
+		printf("%d %d died\n", ts, philo->id);
+		flushed = true;
 	}
-	return (0);
+	pthread_mutex_unlock(&philo->e->monitor.mtx);
 }

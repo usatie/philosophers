@@ -6,10 +6,11 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 15:13:06 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 16:37:01 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 18:47:24 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <limits.h>
 #include <errno.h>
 #include "libftsubset.h"
 #include "philo.h"
@@ -22,6 +23,8 @@ void	argparse(t_args *args, int argc, char *argv[])
 	if (argc < 5 || argc > 6)
 		usage_err();
 	args->num_philo = get_int(argv[1]);
+	if (args->num_philo < 2 || args->num_philo > 200)
+		usage_err();
 	args->time_to_die_ms = get_int(argv[2]);
 	args->time_to_eat_ms = get_int(argv[3]);
 	args->time_to_sleep_ms = get_int(argv[4]);
@@ -29,13 +32,29 @@ void	argparse(t_args *args, int argc, char *argv[])
 		args->max_eat = get_int(argv[5]);
 	else
 		args->max_eat = -1;
+	if (args->max_eat == 0)
+		usage_err();
 }	
 
 void	usage_err(void)
 {
 	err_exit(
-		"Usage: ./philo number_of_philosophers time_to_die time_to_eat "
+		"USAGE:\n"
+		"  ./philo number_of_philosophers time_to_die time_to_eat "
 		"time_to_sleep [number_of_times_each_philosopher_must_eat]\n"
+		"\n"
+		"DESCRIPTION:\n"
+		"  - number_of_philosophers is only valid between 2 to 200.\n"
+		"  - number_of_times_each_philosopher_must_eat must be non-zero\n"
+		"    value. When it is negative or not specified, the simulation\n"
+		"    does not end until someone dies.\n"
+		"VALID EXAMPLE:\n"
+		"  ./philo 5 500 100 100\n"
+		"  ./philo 5 500 100 100 10\n"
+		"INVALID EXAMPLE:\n"
+		"  ./philo 5 500 100\n"
+		"  ./philo 5 500 100 100 10 100\n"
+		"  ./philo 5 9999999999999999 100 100 10\n"
 		);
 }
 
@@ -52,7 +71,7 @@ static int	get_int(const char *s)
 		usage_err();
 	if (*endptr != '\0')
 		usage_err();
-	if (res < 0 || res >= 360)
+	if (res < 0 || res > INT_MAX)
 		usage_err();
 	return ((int)res);
 }

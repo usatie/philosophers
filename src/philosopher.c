@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:02:53 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 14:57:50 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 21:23:52 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,15 @@ int	philo_eat(t_philo *philo)
 	if (philo_log(philo, "has taken a fork") < 0 && error == 0)
 		error = -2;
 	pthread_mutex_lock(&philo->mtx);
-	gettimeofday_rounddown_ms(&philo->last_eat_at);
-	philo->eat_count++;
-	philo->state = PH_EATING;
-	if (philo_log(philo, "is eating") < 0 && error == 0)
+	if (is_philo_died(philo, &philo->last_eat_at))
 		error = -3;
+	else
+	{
+		philo->eat_count++;
+		philo->state = PH_EATING;
+		if (philo_log(philo, "is eating") < 0 && error == 0)
+			error = -4;
+	}
 	pthread_mutex_unlock(&philo->mtx);
 	msleep_since(philo->last_eat_at, philo->e->args.time_to_eat_ms);
 	pthread_mutex_unlock(&philo->left->mtx);
