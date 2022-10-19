@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 18:16:33 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 01:38:24 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 10:12:01 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	get_timestamp_ms(t_timeval since)
 	int			ts_msec;
 
 	gettimeofday(&now, NULL);
-	ts_msec = (now.tv_sec - since.tv_sec) * ONE_SEC_IN_MSEC;
+	ts_msec = (int)(now.tv_sec - since.tv_sec) * ONE_SEC_IN_MSEC;
 	ts_msec += (now.tv_usec - since.tv_usec) / ONE_MSEC_IN_USEC;
 	return (ts_msec);
 }
@@ -50,12 +50,12 @@ suseconds_t	timediff_usec(t_timeval start, t_timeval end)
 {
 	suseconds_t	diff;
 
-	diff = (end.tv_sec - start.tv_sec) * ONE_SEC_IN_USEC;
+	diff = (suseconds_t)(end.tv_sec - start.tv_sec) * ONE_SEC_IN_USEC;
 	diff += (end.tv_usec - start.tv_usec);
 	return (diff);
 }
 
-void	sleep_until(t_timeval t)
+void usleep_until(t_timeval t)
 {
 	t_timeval	now;
 	suseconds_t	diff;
@@ -64,81 +64,98 @@ void	sleep_until(t_timeval t)
 	diff = timediff_usec(now, t);
 	while (diff > 0)
 	{
-		usleep(diff / 2);
+		usleep((useconds_t)(diff / 2));
 		gettimeofday(&now, NULL);
 		diff = timediff_usec(now, t);
 	}
 }
 
-void	philo_log(t_philo *philo, char *msg)
+void	msleep_since(t_timeval since, int milliseconds)
+{
+	t_timeval	end;
+
+	end = timeadd_msec(since, milliseconds);
+	usleep_until(end);
+}
+
+int	philo_log(t_philo *philo, char *msg)
 {
 	int	ts;
+	int	error;
 
+	error = 0;
 	pthread_mutex_lock(&philo->e->monitor.mtx);
 	if (!philo->e->monitor.is_died || strcmp(msg, "died") == 0)
 	{
 		ts = get_timestamp_ms(philo->e->started_at);
 		printf("%d %d %s\n", ts, philo->id, msg);
 	}
+	else
+		error = -1;
 	pthread_mutex_unlock(&philo->e->monitor.mtx);
+	return (error);
 }
 
-void	philo_eat(t_philo *philo)
+int	philo_eat(t_philo *philo)
 {
+	int	error;
+
+	error = 0;
 	pthread_mutex_lock(&philo->left->mtx);
-	philo_log(philo, "has taken a fork");
+	if (philo_log(philo, "has taken a fork") < 0)
+		error = -1;
 	pthread_mutex_lock(&philo->right->mtx);
-	philo_log(philo, "has taken a fork");
+	if (philo_log(philo, "has taken a fork") < 0 && error == 0)
+		error = -2;
 	pthread_mutex_lock(&philo->mtx);
 	gettimeofday(&philo->last_eat_at, NULL);
 	philo->last_eat_at.tv_usec -= (philo->last_eat_at.tv_usec % ONE_MSEC_IN_USEC); // msec以下切り捨て
 	philo->eat_count++;
 	philo->state = PH_EATING;
-	philo_log(philo, "is eating");
+	if (philo_log(philo, "is eating") < 0 && error == 0)
+		error = -3;
 	pthread_mutex_unlock(&philo->mtx);
-	sleep_until(timeadd_msec(philo->last_eat_at, philo->e->args.time_to_eat_ms));
+	msleep_since(philo->last_eat_at, philo->e->args.time_to_eat_ms);
 	pthread_mutex_unlock(&philo->left->mtx);
 	pthread_mutex_unlock(&philo->right->mtx);
+	return (error);
 }
 
 // last_eat_atはphiloのスレッド以外からは更新されないので
 // readだけならmutexの必要なし
-void	philo_sleep(t_philo *philo)
+int	philo_sleep(t_philo *philo)
 {
 	philo->state = PH_SLEEPING;
-	philo_log(philo, "is sleeping");
-	sleep_until(timeadd_msec(philo->last_eat_at, philo->e->args.time_to_eat_ms + philo->e->args.time_to_sleep_ms));
+	if (philo_log(philo, "is sleeping") < 0)
+		return (-1);
+	msleep_since(philo->last_eat_at, philo->e->args.time_to_eat_ms + philo->e->args.time_to_sleep_ms);
+	return (0);
 }
 
-void	philo_think(t_philo *philo)
+int	philo_think(t_philo *philo)
 {
-	philo_log(philo, "is thinking");
+	if (philo_log(philo, "is thinking") < 0)
+		return (-1);
 	philo->state = PH_THINKING;
 	const int	n = philo->e->args.num_philo;
 	const int	k = philo->e->args.num_philo / 2;
 	const int	initial_slot = (k * philo->id) % n;
 	if (philo->eat_count == 0)
 	{
-		sleep_until(timeadd_msec(philo->last_eat_at, philo->e->args.time_to_eat_ms * initial_slot / k));
+		msleep_since(philo->last_eat_at, philo->e->args.time_to_eat_ms * initial_slot / k);
 	}
 	else
-		sleep_until(timeadd_msec(philo->last_eat_at, philo->e->args.time_to_eat_ms * n / k));
+		msleep_since(philo->last_eat_at, philo->e->args.time_to_eat_ms * n / k);
+	return (0);
 }
 
-bool	should_continue(t_philo *philo)
+bool	is_hungry(t_philo *philo)
 {
 	const t_args	*args = &philo->e->args;
-	bool			continue_flg;
 
-	continue_flg = ((args->max_eat < 0) || (philo->eat_count < args->max_eat));
-	if (continue_flg)
-	{
-		pthread_mutex_lock(&philo->e->monitor.mtx);
-		if (philo->e->monitor.is_died)
-			continue_flg = false;
-		pthread_mutex_unlock(&philo->e->monitor.mtx);
-	}
-	return (continue_flg);
+	if (args->max_eat < 0)
+		return (true);
+	return (philo->eat_count < args->max_eat);
 }
 
 void	err_exit(char *msg)
@@ -152,20 +169,23 @@ void	*philosopher_func(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	sleep_until(philo->e->started_at);
-	while (should_continue(philo))
+	usleep_until(philo->e->started_at);
+	while (is_hungry(philo))
 	{
 		if (philo->state == PH_THINKING)
 		{
-			philo_eat(philo);
+			if (philo_eat(philo) < 0)
+				break ;
 		}
 		else if (philo->state == PH_EATING)
 		{
-			philo_sleep(philo);
+			if (philo_sleep(philo) < 0)
+				break ;
 		}
 		else if (philo->state == PH_SLEEPING)
 		{
-			philo_think(philo);
+			if (philo_think(philo) < 0)
+				break ;
 		}
 		else
 		{
@@ -231,7 +251,7 @@ void	*monitor_philosophers(void *arg)
 	bool	some_still_eating = true;
 
 	e = (t_env *)arg;
-	sleep_until(e->started_at);
+	usleep_until(e->started_at);
 	while (all_alive && some_still_eating)
 	{
 		some_still_eating = false;

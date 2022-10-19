@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 01:01:05 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 10:11:46 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,27 @@ typedef struct s_philo		t_philo;
 typedef struct s_monitor	t_monitor;
 typedef struct s_args		t_args;
 typedef struct s_env		t_env;
-void	*philosopher_func(void *arg);
-void	init_forks(t_env *e);
-void	init_philosophers(t_env *e);
-void	create_philosophers_threads(t_env *e);
-void	cleanup_mutex(t_env *e);
-void	*monitor_philosophers(void *arg);
-void	argparse(t_args *args, int argc, char *argv[]);
-void	create_monitor_thread(t_env *e);
-void	wait_simulation_ends(t_env *e);
-void	philo_eat(t_philo *philo);
-void	philo_sleep(t_philo *philo);
-void	philo_think(t_philo *philo);
-void	philo_log(t_philo *philo, char *msg);
+
+int			get_timestamp_ms(t_timeval since);
+t_timeval	timeadd_msec(t_timeval t, int interval_msec);
+suseconds_t	timediff_usec(t_timeval start, t_timeval end);
+void		usleep_until(t_timeval t);
+void		msleep_since(t_timeval since, int milliseconds);
+int			philo_log(t_philo *philo, char *msg);
+int			philo_eat(t_philo *philo);
+int			philo_sleep(t_philo *philo);
+int			philo_think(t_philo *philo);
+bool		is_hungry(t_philo *philo);
+void		err_exit(char *msg) __attribute__((noreturn));
+void		*philosopher_func(void *arg);
+void		init_forks(t_env *e);
+void		init_philosophers(t_env *e);
+void		create_philosophers_threads(t_env *e);
+void		*monitor_philosophers(void *arg);
+void		create_monitor_thread(t_env *e);
+void		cleanup_mutex(t_env *e);
+void		argparse(t_args *args, int argc, char *argv[]);
+void		wait_simulation_ends(t_env *e);
 
 struct s_fork {
 	pthread_mutex_t	mtx;
