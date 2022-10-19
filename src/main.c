@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 18:16:33 by susami            #+#    #+#             */
-/*   Updated: 2022/10/18 18:12:41 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 01:38:24 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,86 +16,87 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include "philo.h"
 
 // TODO: pthread_xxxのerror handling
-#define MAX_PHILO 200
 
-typedef struct timeval t_timeval;
-typedef struct s_fork		t_fork;
-typedef struct s_philo		t_philo;
-typedef struct s_monitor	t_monitor;
-typedef struct s_args		t_args;
-typedef struct s_env		t_env;
-void	*philosopher_func(void *arg);
-void	init_forks(t_env *e);
-void	init_philosophers(t_env *e);
-void	create_philosophers_threads(t_env *e);
-void	cleanup_mutex(t_env *e);
-void	*monitor_philosophers(void *arg);
-void	argparse(t_args *args, int argc, char *argv[]);
-void	create_monitor_thread(t_env *e);
-void	wait_simulation_ends(t_env *e);
+#define ONE_SEC_IN_USEC 1000000
+#define ONE_SEC_IN_MSEC 1000
+#define ONE_MSEC_IN_USEC 1000
 
-struct s_fork {
-	pthread_mutex_t	mtx;
-	int				id;
-};
+int	get_timestamp_ms(t_timeval since)
+{
+	t_timeval	now;
+	int			ts_msec;
 
-enum e_pstate {
-	PH_EATING,
-	PH_SLEEPING,
-	PH_THINKING,
-};
+	gettimeofday(&now, NULL);
+	ts_msec = (now.tv_sec - since.tv_sec) * ONE_SEC_IN_MSEC;
+	ts_msec += (now.tv_usec - since.tv_usec) / ONE_MSEC_IN_USEC;
+	return (ts_msec);
+}
 
-struct s_philo {
-	pthread_t		tid;
-	pthread_mutex_t	mtx;
-	int				id;
-	t_env			*e;
-	t_fork			*left;
-	t_fork			*right;
-	int				eat_count;
-	t_timeval		last_eat_at;
-	enum e_pstate	state;
-	int				time_to_cool_down;
-};
+t_timeval	timeadd_msec(t_timeval t, int interval_msec)
+{
+	t.tv_sec += interval_msec / ONE_SEC_IN_MSEC;
+	t.tv_usec += (interval_msec % ONE_SEC_IN_MSEC) * ONE_MSEC_IN_USEC;
+	t.tv_sec += t.tv_usec / ONE_SEC_IN_USEC;
+	t.tv_usec %= ONE_SEC_IN_USEC;
+	t.tv_usec -= (t.tv_usec % ONE_MSEC_IN_USEC);
+	return (t);
+}
 
-struct s_monitor {
-	pthread_t		tid;
-	pthread_mutex_t	mtx;
-	bool			is_died;
-};
+suseconds_t	timediff_usec(t_timeval start, t_timeval end)
+{
+	suseconds_t	diff;
 
-struct s_args {
-	int	num_philo;
-	int	time_to_die_ms;
-	int	time_to_eat_ms;
-	int	time_to_sleep_ms;
-	int	max_eat;
-};
+	diff = (end.tv_sec - start.tv_sec) * ONE_SEC_IN_USEC;
+	diff += (end.tv_usec - start.tv_usec);
+	return (diff);
+}
 
-struct s_env {
-	t_monitor	monitor;
-	t_philo		philosophers[MAX_PHILO];
-	t_fork		forks[MAX_PHILO];
-	t_args		args;
-	t_timeval	started_at;
-};
+void	sleep_until(t_timeval t)
+{
+	t_timeval	now;
+	suseconds_t	diff;
 
-void	philo_eat(t_philo *philo);
-void	philo_sleep(t_philo *philo);
-void	philo_think(t_philo *philo);
+	gettimeofday(&now, NULL);
+	diff = timediff_usec(now, t);
+	while (diff > 0)
+	{
+		usleep(diff / 2);
+		gettimeofday(&now, NULL);
+		diff = timediff_usec(now, t);
+	}
+}
+
+void	philo_log(t_philo *philo, char *msg)
+{
+	int	ts;
+
+	pthread_mutex_lock(&philo->e->monitor.mtx);
+	if (!philo->e->monitor.is_died || strcmp(msg, "died") == 0)
+	{
+		ts = get_timestamp_ms(philo->e->started_at);
+		printf("%d %d %s\n", ts, philo->id, msg);
+	}
+	pthread_mutex_unlock(&philo->e->monitor.mtx);
+}
 
 void	philo_eat(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->left->mtx);
+	philo_log(philo, "has taken a fork");
 	pthread_mutex_lock(&philo->right->mtx);
+	philo_log(philo, "has taken a fork");
 	pthread_mutex_lock(&philo->mtx);
 	gettimeofday(&philo->last_eat_at, NULL);
+	philo->last_eat_at.tv_usec -= (philo->last_eat_at.tv_usec % ONE_MSEC_IN_USEC); // msec以下切り捨て
 	philo->eat_count++;
-	philo->time_to_cool_down--;
+	philo->state = PH_EATING;
+	philo_log(philo, "is eating");
 	pthread_mutex_unlock(&philo->mtx);
-	sleep_until(last_eat_at + time_to_eat_ms);
+	sleep_until(timeadd_msec(philo->last_eat_at, philo->e->args.time_to_eat_ms));
 	pthread_mutex_unlock(&philo->left->mtx);
 	pthread_mutex_unlock(&philo->right->mtx);
 }
@@ -104,20 +105,24 @@ void	philo_eat(t_philo *philo)
 // readだけならmutexの必要なし
 void	philo_sleep(t_philo *philo)
 {
-	sleep_until(last_eat_at + time_to_eat_ms + time_to_sleep_ms);
+	philo->state = PH_SLEEPING;
+	philo_log(philo, "is sleeping");
+	sleep_until(timeadd_msec(philo->last_eat_at, philo->e->args.time_to_eat_ms + philo->e->args.time_to_sleep_ms));
 }
 
 void	philo_think(t_philo *philo)
 {
-	if (philo->e->args.num_philo & 1 && philo->time_to_cool_down == 0)
+	philo_log(philo, "is thinking");
+	philo->state = PH_THINKING;
+	const int	n = philo->e->args.num_philo;
+	const int	k = philo->e->args.num_philo / 2;
+	const int	initial_slot = (k * philo->id) % n;
+	if (philo->eat_count == 0)
 	{
-		sleep_until(last_eat_at + time_to_eat_ms * 2);
-		philo->time_to_cool_down = philo->e->args.num_philo / 2;
+		sleep_until(timeadd_msec(philo->last_eat_at, philo->e->args.time_to_eat_ms * initial_slot / k));
 	}
 	else
-	{
-		sleep_until(last_eat_at + time_to_eat_ms);
-	}
+		sleep_until(timeadd_msec(philo->last_eat_at, philo->e->args.time_to_eat_ms * n / k));
 }
 
 bool	should_continue(t_philo *philo)
@@ -147,16 +152,25 @@ void	*philosopher_func(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	sleep_until(philo->e->started_at);
 	while (should_continue(philo))
 	{
 		if (philo->state == PH_THINKING)
+		{
 			philo_eat(philo);
+		}
 		else if (philo->state == PH_EATING)
+		{
 			philo_sleep(philo);
+		}
 		else if (philo->state == PH_SLEEPING)
+		{
 			philo_think(philo);
+		}
 		else
+		{
 			err_exit("Unknown State");
+		}
 	}
 	return (NULL);
 }
@@ -183,53 +197,41 @@ void	init_philosophers(t_env *e)
 	i = 0;
 	while (i < e->args.num_philo)
 	{
+		e->philosophers[i].e = e;
 		e->philosophers[i].id = i + 1;
-		if (i & 1)
-			e->philosophers[i].state = PH_THINKING;
-		else
-			e->philosophers[i].state = PH_SLEEPING;
-		e->philosophers[i].time_to_cool_down = (i + 1) / 2;
+		e->philosophers[i].last_eat_at = e->started_at;
+		e->philosophers[i].state = PH_SLEEPING;
 		if (i == 0)
 			e->philosophers[i].left = &e->forks[e->args.num_philo - 1];
 		else
 			e->philosophers[i].left = &e->forks[i - 1];
-		if (i == e->args.num_philo - 1)
-			e->philosophers[i].right = &e->forks[0];
-		else
-			e->philosophers[i].right = &e->forks[i + 1];
+		e->philosophers[i].right = &e->forks[i];
 		pthread_mutex_init(&e->philosophers[i].mtx, NULL);
 		i++;
 	}
 }
 
-// Create odd index thread first. Because they use forks at first.
 void	create_philosophers_threads(t_env *e)
 {
 	int	i;
 
-	i = 1;
-	while (i < e->args.num_philo)
-	{
-		pthread_create(&e->philosophers[i].tid, NULL, philosopher_func, &e->philosophers[i]);
-		pthread_detach(e->philosophers[i].tid);
-		i += 2;
-	}
 	i = 0;
 	while (i < e->args.num_philo)
 	{
 		pthread_create(&e->philosophers[i].tid, NULL, philosopher_func, &e->philosophers[i]);
 		pthread_detach(e->philosophers[i].tid);
-		i += 2;
+		i++;
 	}
 }
 
 void	*monitor_philosophers(void *arg)
 {
 	t_env	*e;
-	bool	all_alive = false;
-	bool	some_still_eating = false;
+	bool	all_alive = true;
+	bool	some_still_eating = true;
 
 	e = (t_env *)arg;
+	sleep_until(e->started_at);
 	while (all_alive && some_still_eating)
 	{
 		some_still_eating = false;
@@ -241,16 +243,20 @@ void	*monitor_philosophers(void *arg)
 		while (all_alive && i < e->args.num_philo)
 		{
 			pthread_mutex_lock(&e->philosophers[i].mtx);
-			if (e->philosophers[i].eat_count < e->args.max_eat)
+			if (e->args.max_eat < 0 || e->philosophers[i].eat_count < e->args.max_eat)
 			{
 				some_still_eating = true;
-				last_eat_at = e->philosophers[i].last_eat_at;
-				if (last_eat_at + time_to_die > now)
+				t_timeval	now;
+				gettimeofday(&now, NULL);
+				now.tv_usec -= (now.tv_usec % ONE_MSEC_IN_USEC);
+				suseconds_t	diff = timediff_usec(timeadd_msec(e->philosophers[i].last_eat_at, e->args.time_to_die_ms), now);
+				if (diff > 0)
 				{
 					all_alive = false;
 					pthread_mutex_lock(&e->monitor.mtx);
 					e->monitor.is_died = true;
 					pthread_mutex_unlock(&e->monitor.mtx);
+					philo_log(&e->philosophers[i], "died");
 				}
 			}
 			pthread_mutex_unlock(&e->philosophers[i].mtx);
@@ -285,11 +291,11 @@ void	argparse(t_args *args, int argc, char *argv[])
 {
 	(void)argc;
 	(void)argv;
-	args->num_philo = 6;
-	args->time_to_die_ms = 300;
-	args->time_to_eat_ms = 100;
-	args->time_to_sleep_ms = 100;
-	args->max_eat = 3;
+	args->num_philo = 199;
+	args->time_to_die_ms = 1990;
+	args->time_to_eat_ms = 990;
+	args->time_to_sleep_ms = 1000;
+	args->max_eat = -1;
 }
 
 void	wait_simulation_ends(t_env *e)
@@ -310,6 +316,9 @@ int	main(int argc, char *argv[])
 {
 	t_env	e;
 
+	gettimeofday(&e.started_at, NULL);
+	e.started_at.tv_sec += 1;
+	e.started_at.tv_usec = 0;
 	argparse(&e.args, argc, argv);
 	init_forks(&e);
 	init_philosophers(&e);
