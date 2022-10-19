@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:02:53 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 21:23:52 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 21:51:38 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,21 +42,16 @@ int	philo_eat(t_philo *philo)
 
 	error = 0;
 	pthread_mutex_lock(&philo->left->mtx);
-	if (philo_log(philo, "has taken a fork") < 0)
+	if (philo_log(philo, "has taken a fork", NULL) < 0)
 		error = -1;
 	pthread_mutex_lock(&philo->right->mtx);
-	if (philo_log(philo, "has taken a fork") < 0 && error == 0)
+	if (philo_log(philo, "has taken a fork", NULL) < 0 && error == 0)
 		error = -2;
 	pthread_mutex_lock(&philo->mtx);
-	if (is_philo_died(philo, &philo->last_eat_at))
+	philo->eat_count++;
+	philo->state = PH_EATING;
+	if (philo_log(philo, "is eating", &philo->last_eat_at) < 0 && error == 0)
 		error = -3;
-	else
-	{
-		philo->eat_count++;
-		philo->state = PH_EATING;
-		if (philo_log(philo, "is eating") < 0 && error == 0)
-			error = -4;
-	}
 	pthread_mutex_unlock(&philo->mtx);
 	msleep_since(philo->last_eat_at, philo->e->args.time_to_eat_ms);
 	pthread_mutex_unlock(&philo->left->mtx);
@@ -72,7 +67,7 @@ int	philo_sleep(t_philo *philo)
 	const int	time_to_sleep_ms = philo->e->args.time_to_sleep_ms;
 
 	philo->state = PH_SLEEPING;
-	if (philo_log(philo, "is sleeping") < 0)
+	if (philo_log(philo, "is sleeping", NULL) < 0)
 		return (-1);
 	msleep_since(philo->last_eat_at, time_to_eat_ms + time_to_sleep_ms);
 	return (0);
@@ -87,7 +82,7 @@ int	philo_think(t_philo *philo)
 	const int	k = philo->e->args.num_philo / 2;
 	const int	initial_slot = (k * philo->id) % n;
 
-	if (philo_log(philo, "is thinking") < 0)
+	if (philo_log(philo, "is thinking", NULL) < 0)
 		return (-1);
 	philo->state = PH_THINKING;
 	if (philo->eat_count == 0)

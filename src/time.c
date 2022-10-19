@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:51:38 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 15:01:48 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 23:21:35 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,11 @@ int	get_timestamp_ms(t_timeval since)
 }
 
 // msec以下切り捨て
-void	gettimeofday_rounddown_ms(t_timeval *t)
+void	gettimeofday_rounddown_ms(t_timeval *tp)
 {
-	gettimeofday(t, NULL);
-	t->tv_usec /= ONE_MSEC_IN_USEC;
-	t->tv_usec *= ONE_MSEC_IN_USEC;
+	gettimeofday(tp, NULL);
+	tp->tv_usec /= ONE_MSEC_IN_USEC;
+	tp->tv_usec *= ONE_MSEC_IN_USEC;
 }
 
 t_timeval	timeadd_msec(t_timeval t, int interval_msec)
@@ -54,5 +54,22 @@ suseconds_t	timediff_usec(t_timeval start, t_timeval end)
 
 	diff = (suseconds_t)(end.tv_sec - start.tv_sec) * ONE_SEC_IN_USEC;
 	diff += (end.tv_usec - start.tv_usec);
+	return (diff);
+}
+
+/*
+	```
+	diff = (int)(end.tv_sec - start.tv_sec) * ONE_SEC_IN_MSEC;
+	```
+	norminette gives wrong error to this.
+	`error : SPC_AFTER_POINTER space after pointer [c/norminette]`
+*/
+int	timediff_msec(t_timeval start, t_timeval end)
+{
+	int	diff;
+
+	diff = (int)(end.tv_sec - start.tv_sec);
+	diff *= ONE_SEC_IN_MSEC;
+	diff += (end.tv_usec - start.tv_usec) / ONE_MSEC_IN_USEC;
 	return (diff);
 }

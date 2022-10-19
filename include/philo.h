@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 21:14:51 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/19 23:21:17 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,14 @@ typedef struct s_args		t_args;
 typedef struct s_env		t_env;
 
 int			get_timestamp_ms(t_timeval since);
-void		gettimeofday_rounddown_ms(t_timeval *t);
+void		gettimeofday_rounddown_ms(t_timeval *tp);
 t_timeval	timeadd_msec(t_timeval t, int interval_msec);
 suseconds_t	timediff_usec(t_timeval start, t_timeval end);
+int			timediff_msec(t_timeval start, t_timeval end);
 void		usleep_until(t_timeval t);
 void		msleep_since(t_timeval since, int milliseconds);
-int			philo_log(t_philo *philo, char *msg);
-void		philo_log_died(t_philo *philo);
+int			philo_log(t_philo *philo, const char *msg, t_timeval *tp);
+void		philo_log_died(t_philo *philo, t_timeval t);
 int			philo_eat(t_philo *philo);
 int			philo_sleep(t_philo *philo);
 int			philo_think(t_philo *philo);
@@ -43,7 +44,7 @@ void		init_forks(t_env *e);
 void		init_philosophers(t_env *e);
 void		init_env(t_env *e);
 void		create_philosophers_threads(t_env *e);
-bool		is_philo_died(t_philo *philo, t_timeval *t);
+bool		is_philo_died(t_philo *philo, t_timeval *tp);
 void		*monitor_func(void *arg);
 void		create_monitor_thread(t_env *e);
 void		cleanup_mutex(t_env *e);
