@@ -6,7 +6,7 @@
 #    By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 18:48:58 by susami            #+#    #+#              #
-#    Updated: 2022/10/19 23:50:36 by susami           ###   ########.fr        #
+#    Updated: 2022/10/20 20:36:52 by susami           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,10 +35,11 @@ SRCS		=	$(SRC_DIR)/init.c							\
 				$(SRC_DIR)/main.c							\
 				$(SRC_DIR)/monitor.c						\
 				$(SRC_DIR)/philosopher.c					\
+				$(SRC_DIR)/unsafe_philosopher.c				\
 				$(SRC_DIR)/simulation.c						\
-				$(SRC_DIR)/time.c							\
-				$(SRC_DIR)/sleep.c							\
-				$(SRC_DIR)/argparse.c						\
+				$(SRC_DIR)/util/time.c						\
+				$(SRC_DIR)/util/sleep.c						\
+				$(SRC_DIR)/argparse/argparse.c				\
 				$(SRC_DIR)/libftsubset/ft_isdigit.c			\
 				$(SRC_DIR)/libftsubset/ft_isspace.c			\
 				$(SRC_DIR)/libftsubset/ft_strlen.c			\

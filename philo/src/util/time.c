@@ -6,12 +6,13 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:51:38 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 23:21:35 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 20:37:34 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <sys/time.h>
+#include "util.h"
 #include "philo.h"
 
 #define ONE_SEC_IN_USEC 1000000

@@ -6,10 +6,11 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:02:53 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 18:15:18 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 20:51:05 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "util.h"
 #include "philo.h"
 
 static int	pickup_forks(t_philo *philo);
@@ -25,7 +26,7 @@ void	*philosopher_func(void *arg)
 	error = 0;
 	philo = (t_philo *)arg;
 	usleep_until(philo->e->started_at);
-	while (error == 0 && is_hungry(philo))
+	while (error == 0 && unsafe_is_hungry(philo))
 	{
 		if (philo->state == PH_THINKING)
 			error = philo_eat(philo);
@@ -39,15 +40,6 @@ void	*philosopher_func(void *arg)
 		}
 	}
 	return (NULL);
-}
-
-bool	is_hungry(t_philo *philo)
-{
-	const t_args	*args = &philo->e->args;
-
-	if (args->max_eat < 0)
-		return (true);
-	return (philo->eat_count < args->max_eat);
 }
 
 /* ************************************************************************** */

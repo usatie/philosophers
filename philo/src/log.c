@@ -6,11 +6,12 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:58:12 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 00:25:27 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 20:50:34 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include "util.h"
 #include "philo.h"
 
 // This method must be called from the philosopher's thread or lock 
@@ -27,7 +28,7 @@ int	philo_log(t_philo *philo, const char *msg, t_timeval *tp)
 	pthread_mutex_lock(&philo->e->monitor.mtx);
 	if (!philo->e->monitor.is_dead)
 	{
-		if (is_dead_no_philo_lock(philo, &now))
+		if (unsafe_is_dead(philo, &now))
 		{
 			error = -1;
 			philo_log_died_no_monitor_lock(philo, now);

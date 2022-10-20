@@ -6,11 +6,12 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 15:01:20 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 15:01:43 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 20:36:31 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
+#include "util.h"
 #include "philo.h"
 
 void	usleep_until(t_timeval t)
