@@ -6,16 +6,32 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:09:31 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 11:32:19 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 18:12:10 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include "philo.h"
 
-#include <stdio.h>
-
 #define MONITOR_INTERVAL_USEC 1000
+
+static bool	should_continue_simulation(t_env *e);
+
+void	*monitor_func(void *arg)
+{
+	t_env	*e;
+	bool	should_continue;
+
+	e = (t_env *)arg;
+	should_continue = true;
+	usleep_until(e->started_at);
+	while (should_continue)
+	{
+		usleep(MONITOR_INTERVAL_USEC);
+		should_continue = should_continue_simulation(e);
+	}
+	return (NULL);
+}
 
 // This method must be called from the philosopher's thread or lock 
 // the philosopher's mutex before calling it. Because it reads
@@ -34,6 +50,12 @@ bool	is_dead_no_philo_lock(t_philo *philo, t_timeval *tp)
 	diff = timediff_usec(deadline, now);
 	return (diff > 0);
 }
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                          File Private Functions                            */
+/*                                                                            */
+/* ************************************************************************** */
 
 static bool	should_continue_simulation(t_env *e)
 {
@@ -61,20 +83,4 @@ static bool	should_continue_simulation(t_env *e)
 		i++;
 	}
 	return (!is_dead && eating);
-}
-
-void	*monitor_func(void *arg)
-{
-	t_env	*e;
-	bool	should_continue;
-
-	e = (t_env *)arg;
-	should_continue = true;
-	usleep_until(e->started_at);
-	while (should_continue)
-	{
-		usleep(MONITOR_INTERVAL_USEC);
-		should_continue = should_continue_simulation(e);
-	}
-	return (NULL);
 }

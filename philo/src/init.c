@@ -6,13 +6,16 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:06:06 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 16:27:52 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 18:12:45 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <string.h>
 #include "philo.h"
+
+static void	init_forks(t_env *e);
+static void	init_philosophers(t_env *e);
 
 void	init_env(t_env *e)
 {
@@ -23,7 +26,13 @@ void	init_env(t_env *e)
 	init_philosophers(e);
 }
 
-void	init_forks(t_env *e)
+/* ************************************************************************** */
+/*                                                                            */
+/*                          File Private Functions                            */
+/*                                                                            */
+/* ************************************************************************** */
+
+static void	init_forks(t_env *e)
 {
 	int	i;
 
@@ -37,7 +46,7 @@ void	init_forks(t_env *e)
 	}
 }
 
-void	init_philosophers(t_env *e)
+static void	init_philosophers(t_env *e)
 {
 	int	i;
 

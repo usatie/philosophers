@@ -6,11 +6,16 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:02:53 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 16:44:32 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 18:15:18 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static int	pickup_forks(t_philo *philo);
+static int	philo_eat(t_philo *philo);
+static int	philo_sleep(t_philo *philo);
+static int	philo_think(t_philo *philo);
 
 void	*philosopher_func(void *arg)
 {
@@ -36,6 +41,21 @@ void	*philosopher_func(void *arg)
 	return (NULL);
 }
 
+bool	is_hungry(t_philo *philo)
+{
+	const t_args	*args = &philo->e->args;
+
+	if (args->max_eat < 0)
+		return (true);
+	return (philo->eat_count < args->max_eat);
+}
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                          File Private Functions                            */
+/*                                                                            */
+/* ************************************************************************** */
+
 static int	pickup_forks(t_philo *philo)
 {
 	int	error;
@@ -56,13 +76,7 @@ static int	pickup_forks(t_philo *philo)
 	return (error);
 }
 
-static void	putdown_forks(t_philo *philo)
-{
-	pthread_mutex_unlock(&philo->high->mtx);
-	pthread_mutex_unlock(&philo->low->mtx);
-}
-
-int	philo_eat(t_philo *philo)
+static int	philo_eat(t_philo *philo)
 {
 	int	error;
 
@@ -76,14 +90,15 @@ int	philo_eat(t_philo *philo)
 		pthread_mutex_unlock(&philo->mtx);
 		if (error == 0)
 			msleep_since(philo->last_eat_at, philo->e->args.time_to_eat_ms);
-		putdown_forks(philo);
+		pthread_mutex_unlock(&philo->high->mtx);
+		pthread_mutex_unlock(&philo->low->mtx);
 	}
 	return (error);
 }
 
 // last_eat_atはphiloのスレッド以外からは更新されないので
 // readだけならmutexの必要なし
-int	philo_sleep(t_philo *philo)
+static int	philo_sleep(t_philo *philo)
 {
 	const int	time_to_eat_ms = philo->e->args.time_to_eat_ms;
 	const int	time_to_sleep_ms = philo->e->args.time_to_sleep_ms;
@@ -97,7 +112,7 @@ int	philo_sleep(t_philo *philo)
 
 // If N is odd, N = 2k + 1, initial usleep should be (k * id) / N
 // If N is even, N = 2k, initial usleep should be (k * id) / N
-int	philo_think(t_philo *philo)
+static int	philo_think(t_philo *philo)
 {
 	int			error;
 	const int	time_to_eat_ms = philo->e->args.time_to_eat_ms;
@@ -115,13 +130,4 @@ int	philo_think(t_philo *philo)
 			msleep_since(philo->last_eat_at, time_to_eat_ms * n / k);
 	}
 	return (error);
-}
-
-bool	is_hungry(t_philo *philo)
-{
-	const t_args	*args = &philo->e->args;
-
-	if (args->max_eat < 0)
-		return (true);
-	return (philo->eat_count < args->max_eat);
 }

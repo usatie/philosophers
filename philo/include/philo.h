@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 15:55:02 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 18:20:17 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,34 +27,43 @@ typedef struct s_monitor	t_monitor;
 typedef struct s_args		t_args;
 typedef struct s_env		t_env;
 
+// time.c
 int			get_timestamp_ms(t_timeval since);
 void		gettimeofday_rounddown_ms(t_timeval *tp);
 t_timeval	timeadd_msec(t_timeval t, int interval_msec);
 suseconds_t	timediff_usec(t_timeval start, t_timeval end);
 int			timediff_msec(t_timeval start, t_timeval end);
+
+// sleep.c
 void		usleep_until(t_timeval t);
 void		msleep_since(t_timeval since, int milliseconds);
+
+// log.c
 int			philo_log(t_philo *philo, const char *msg, t_timeval *tp);
 void		philo_log_died_no_monitor_lock(t_philo *philo, t_timeval t);
 void		philo_log_died(t_philo *philo, t_timeval t);
-int			philo_eat(t_philo *philo);
-int			philo_sleep(t_philo *philo);
-int			philo_think(t_philo *philo);
+
+// philosopher.c
 bool		is_hungry(t_philo *philo);
-void		err_exit(char *msg) __attribute__((noreturn));
 void		*philosopher_func(void *arg);
-void		init_forks(t_env *e);
-void		init_philosophers(t_env *e);
+
+// init.c
 void		init_env(t_env *e);
-void		create_philosophers_threads(t_env *e);
+
+// monitor.c
 bool		is_dead_no_philo_lock(t_philo *philo, t_timeval *tp);
 void		*monitor_func(void *arg);
-void		create_monitor_thread(t_env *e);
-void		cleanup_mutex(t_env *e);
+
+// argparse.c
 void		usage_err(void) __attribute__((noreturn));
 void		argparse(t_args *args, int argc, char *argv[]);
+
+// simulation.c
 void		wait_simulation_ends(t_env *e);
 void		start_simulation(t_env *e);
+
+// main.c
+void		err_exit(char *msg) __attribute__((noreturn));
 
 struct s_fork {
 	pthread_mutex_t	mtx;
