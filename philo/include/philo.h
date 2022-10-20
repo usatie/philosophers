@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 22:14:55 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 22:35:46 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,6 @@ typedef struct s_env		t_env;
 
 // init.c
 void	init_env(t_env *e);
-
-// argparse.c
-void	usage_err(void) __attribute__((noreturn));
-void	argparse(t_args *args, int argc, char *argv[]);
 
 // main.c
 void	err_exit(char *msg) __attribute__((noreturn));

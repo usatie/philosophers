@@ -1,37 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   argparse.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/17 18:16:33 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 22:39:24 by susami           ###   ########.fr       */
+/*   Created: 2022/10/20 22:35:51 by susami            #+#    #+#             */
+/*   Updated: 2022/10/20 22:36:59 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include "libftsubset.h"
-#include "simulation.h"
-#include "argparse.h"
-#include "philo.h"
+#ifndef ARGPARSE_H
+# define ARGPARSE_H
 
-// TODO: pthread_xxxのerror handling
+# include "philo.h"
 
-void	err_exit(char *msg)
-{
-	write(2, msg, ft_strlen(msg));
-	exit(1);
-}
+// argparse.c
+void	usage_err(void) __attribute__((noreturn));
+void	argparse(t_args *args, int argc, char *argv[]);
 
-int	main(int argc, char *argv[])
-{
-	t_env	e;
-
-	argparse(&e.args, argc, argv);
-	init_env(&e);
-	start_simulation(&e);
-	wait_simulation_ends(&e);
-	exit(0);
-}
+#endif
