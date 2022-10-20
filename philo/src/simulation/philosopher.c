@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:02:53 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 22:17:21 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 23:19:23 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,7 @@ void	*philosopher_func(void *arg)
 		else if (philo->state == PH_SLEEPING)
 			error = philo_think(philo);
 		else
-		{
-			err_exit("Unknown State");
-		}
+			error = -1;
 	}
 	return (NULL);
 }

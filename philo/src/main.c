@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 18:16:33 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 23:13:22 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 23:18:56 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,6 @@
 #include "philo.h"
 
 // TODO: pthread_xxxのerror handling
-
-void	err_exit(char *msg)
-{
-	write(2, msg, ft_strlen(msg));
-	exit(1);
-}
 
 int	main(int argc, char *argv[])
 {
