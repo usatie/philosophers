@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 15:13:06 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 23:57:12 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 10:48:49 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	argparse(t_args *args, int argc, char *argv[])
 	if (argc < 5 || argc > 6)
 		usage_err();
 	args->num_philo = get_int(argv[1]);
-	if (args->num_philo < 2 || args->num_philo > MAX_PHILO)
+	if (args->num_philo <= 0 || args->num_philo > MAX_PHILO)
 		usage_err();
 	args->time_to_die_ms = get_int(argv[2]);
 	args->time_to_eat_ms = get_int(argv[3]);

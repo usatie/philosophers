@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 00:25:35 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 15:55:02 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ struct s_philo {
 	pthread_mutex_t	mtx;
 	int				id;
 	t_env			*e;
-	t_fork			*left;
-	t_fork			*right;
+	t_fork			*low;
+	t_fork			*high;
 	int				eat_count;
 	t_timeval		last_eat_at;
 	enum e_pstate	state;

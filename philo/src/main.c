@@ -6,25 +6,16 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 18:16:33 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 15:13:21 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 17:32:31 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
+#include "libftsubset.h"
 #include "philo.h"
 
 // TODO: pthread_xxxのerror handling
-
-static size_t	ft_strlen(const char *s)
-{
-	size_t	len;
-
-	len = 0;
-	while (s[len])
-		len++;
-	return (len);
-}
 
 void	err_exit(char *msg)
 {

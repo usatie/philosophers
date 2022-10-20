@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:06:06 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 11:07:49 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 16:27:52 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,15 @@ void	init_philosophers(t_env *e)
 		e->philosophers[i].last_eat_at = e->started_at;
 		e->philosophers[i].state = PH_SLEEPING;
 		if (i == 0)
-			e->philosophers[i].left = &e->forks[e->args.num_philo - 1];
+		{
+			e->philosophers[i].low = &e->forks[0];
+			e->philosophers[i].high = &e->forks[e->args.num_philo - 1];
+		}
 		else
-			e->philosophers[i].left = &e->forks[i - 1];
-		e->philosophers[i].right = &e->forks[i];
+		{
+			e->philosophers[i].low = &e->forks[i - 1];
+			e->philosophers[i].high = &e->forks[i];
+		}
 		pthread_mutex_init(&e->philosophers[i].mtx, NULL);
 		i++;
 	}

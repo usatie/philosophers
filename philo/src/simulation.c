@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:10:57 by susami            #+#    #+#             */
-/*   Updated: 2022/10/19 14:45:45 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 16:42:31 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ void	create_monitor_thread(t_env *e)
 	pthread_create(&e->monitor.tid, NULL, monitor_func, e);
 }
 
+// TODO: What if deadlock is happening when destroying mutex?
+// Deadl lock never happens with my program!
 void	cleanup_mutex(t_env *e)
 {
 	int	i;
