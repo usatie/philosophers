@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 21:59:59 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 22:14:55 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,28 +33,12 @@ typedef struct s_env		t_env;
 /*                                                                            */
 /* ************************************************************************** */
 
-// philosopher.c
-void	*philosopher_func(void *arg);
-
-// unsafe_philosopher.c
-bool	unsafe_is_hungry(t_philo *philo);
-bool	unsafe_is_dead(t_philo *philo, t_timeval *tp);
-int		unsafe_log_action(t_philo *philo, const char *msg, t_timeval *tp);
-void	unsafe_log_dead(t_philo *philo, t_timeval t);
-
 // init.c
 void	init_env(t_env *e);
-
-// monitor.c
-void	*monitor_func(void *arg);
 
 // argparse.c
 void	usage_err(void) __attribute__((noreturn));
 void	argparse(t_args *args, int argc, char *argv[]);
-
-// simulation.c
-void	wait_simulation_ends(t_env *e);
-void	start_simulation(t_env *e);
 
 // main.c
 void	err_exit(char *msg) __attribute__((noreturn));

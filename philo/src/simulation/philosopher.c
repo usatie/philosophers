@@ -6,12 +6,12 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:02:53 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 21:35:36 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 22:17:21 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "util.h"
-#include "philo.h"
+#include "simulation.h"
 
 static int	pickup_forks(t_philo *philo);
 static int	philo_eat(t_philo *philo);

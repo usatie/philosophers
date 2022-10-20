@@ -6,13 +6,13 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 20:31:37 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 21:41:20 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 22:17:31 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include "util.h"
-#include "philo.h"
+#include "simulation.h"
 
 static void	internal_log_dead(t_philo *philo, t_timeval t);
 

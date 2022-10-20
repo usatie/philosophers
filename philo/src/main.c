@@ -6,13 +6,14 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 18:16:33 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 17:32:31 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 22:15:36 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
 #include "libftsubset.h"
+#include "simulation.h"
 #include "philo.h"
 
 // TODO: pthread_xxxのerror handling

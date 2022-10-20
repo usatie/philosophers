@@ -6,13 +6,13 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:09:31 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 21:31:58 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 22:17:00 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include "util.h"
-#include "philo.h"
+#include "simulation.h"
 
 #define MONITOR_INTERVAL_USEC 1000
 

@@ -6,11 +6,11 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:10:57 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 18:16:36 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 22:17:27 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "simulation.h"
 
 static void	create_philosophers_threads(t_env *e);
 static void	create_monitor_thread(t_env *e);
