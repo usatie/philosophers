@@ -6,7 +6,7 @@
 #    By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 18:48:58 by susami            #+#    #+#              #
-#    Updated: 2022/10/20 22:10:58 by susami           ###   ########.fr        #
+#    Updated: 2022/10/20 22:48:40 by susami           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,6 +44,7 @@ SRCS		=	$(SRC_DIR)/init.c							\
 				$(SRC_DIR)/libftsubset/ft_strlen.c			\
 				$(SRC_DIR)/libftsubset/ft_strncmp.c			\
 				$(SRC_DIR)/libftsubset/ft_strtol.c			\
+				$(SRC_DIR)/libftsubset/ft_putstr_fd.c		\
 
 
 OBJ_DIR		=	objs

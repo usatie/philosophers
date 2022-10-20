@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 22:35:51 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 22:36:59 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 22:54:11 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 # define ARGPARSE_H
 
 # include "philo.h"
+# define ARGPARSE_ERROR -1
+# define ARGPARSE_SUCCESS 0
 
 // argparse.c
-void	usage_err(void) __attribute__((noreturn));
-void	argparse(t_args *args, int argc, char *argv[]);
+int	argparse(t_args *args, int argc, char *argv[]);
 
 #endif

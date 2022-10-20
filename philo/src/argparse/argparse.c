@@ -6,11 +6,12 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 15:13:06 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 22:36:43 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 23:11:46 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <limits.h>
+#include <unistd.h> // STDERR_FILENO
+#include <limits.h> // INT_MAX
 #include <errno.h>
 #include "libftsubset.h"
 #include "argparse.h"
@@ -26,30 +27,46 @@ This can be used like this.
 char *s = "between 2 to " TOSTRING(MAX_PHILO) ".\n";
 */
 
+static int	usage_err(void);
 static bool	is_numeric(const char *s);
-static int	get_int(const char *s);
+static int	get_int(const char *s, int *err);
 
-void	argparse(t_args *args, int argc, char *argv[])
+int	argparse(t_args *args, int argc, char *argv[])
 {
+	int	err;
+
 	if (argc < 5 || argc > 6)
-		usage_err();
-	args->num_philo = get_int(argv[1]);
-	if (args->num_philo <= 0 || args->num_philo > MAX_PHILO)
-		usage_err();
-	args->time_to_die_ms = get_int(argv[2]);
-	args->time_to_eat_ms = get_int(argv[3]);
-	args->time_to_sleep_ms = get_int(argv[4]);
+		return (usage_err());
+	args->num_philo = get_int(argv[1], &err);
+	if (err != 0 || args->num_philo <= 0 || args->num_philo > MAX_PHILO)
+		return (usage_err());
+	args->time_to_die_ms = get_int(argv[2], &err);
+	if (err != 0)
+		return (usage_err());
+	args->time_to_eat_ms = get_int(argv[3], &err);
+	if (err != 0)
+		return (usage_err());
+	args->time_to_sleep_ms = get_int(argv[4], &err);
+	if (err != 0)
+		return (usage_err());
 	if (argc == 6)
-		args->max_eat = get_int(argv[5]);
+		args->max_eat = get_int(argv[5], &err);
 	else
 		args->max_eat = -1;
-	if (args->max_eat == 0)
-		usage_err();
+	if (err != 0 || args->max_eat == 0)
+		return (usage_err());
+	return (ARGPARSE_SUCCESS);
 }
 
-void	usage_err(void)
+/* ************************************************************************** */
+/*                                                                            */
+/*                          File Private Functions                            */
+/*                                                                            */
+/* ************************************************************************** */
+
+static int	usage_err(void)
 {
-	err_exit(
+	ft_putstr_fd(
 		"USAGE:\n"
 		"  ./philo number_of_philosophers time_to_die time_to_eat "
 		"time_to_sleep [number_of_times_each_philosopher_must_eat]\n"
@@ -66,31 +83,27 @@ void	usage_err(void)
 		"INVALID EXAMPLE:\n"
 		"  ./philo 5 500 100\n"
 		"  ./philo 5 500 100 100 10 100\n"
-		"  ./philo 5 9999999999999999 100 100 10\n"
-		);
+		"  ./philo 5 9999999999999999 100 100 10\n",
+		STDERR_FILENO);
+	return (ARGPARSE_ERROR);
 }
 
-/* ************************************************************************** */
-/*                                                                            */
-/*                          File Private Functions                            */
-/*                                                                            */
-/* ************************************************************************** */
-
-static int	get_int(const char *s)
+static int	get_int(const char *s, int *err)
 {
 	long	res;
 	char	*endptr;
 
+	*err = 0;
 	if (!is_numeric(s))
-		usage_err();
+		*err = usage_err();
 	errno = 0;
 	res = ft_strtol(s, &endptr, 10);
 	if (errno != 0)
-		usage_err();
+		*err = usage_err();
 	if (*endptr != '\0')
-		usage_err();
+		*err = usage_err();
 	if (res < 0 || res > INT_MAX)
-		usage_err();
+		*err = usage_err();
 	return ((int)res);
 }
 
