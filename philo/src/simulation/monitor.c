@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:09:31 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 20:50:55 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 21:31:58 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static bool	should_continue_simulation(t_env *e)
 			eating = true;
 			if (unsafe_is_dead(&e->philosophers[i], &now))
 			{
-				philo_log_died(&e->philosophers[i], now);
+				unsafe_log_dead(&e->philosophers[i], now);
 				is_dead_any = true;
 			}
 		}

@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:02:53 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 20:51:05 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/20 21:35:36 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,13 @@ static int	pickup_forks(t_philo *philo)
 	int	error;
 
 	pthread_mutex_lock(&philo->low->mtx);
-	error = philo_log(philo, "has taken a fork", NULL);
+	error = unsafe_log_action(philo, "has taken a fork", NULL);
 	if (philo->low->id == philo->high->id)
 		error = -1;
 	if (error == 0)
 	{
 		pthread_mutex_lock(&philo->high->mtx);
-		error = philo_log(philo, "has taken a fork", NULL);
+		error = unsafe_log_action(philo, "has taken a fork", NULL);
 		if (error)
 			pthread_mutex_unlock(&philo->high->mtx);
 	}
@@ -72,13 +72,13 @@ static int	philo_eat(t_philo *philo)
 {
 	int	error;
 
+	philo->state = PH_EATING;
 	error = pickup_forks(philo);
 	if (error == 0)
 	{
 		pthread_mutex_lock(&philo->mtx);
 		philo->eat_count++;
-		philo->state = PH_EATING;
-		error = philo_log(philo, "is eating", &philo->last_eat_at);
+		error = unsafe_log_action(philo, "is eating", &philo->last_eat_at);
 		pthread_mutex_unlock(&philo->mtx);
 		if (error == 0)
 			msleep_since(philo->last_eat_at, philo->e->args.time_to_eat_ms);
@@ -92,14 +92,15 @@ static int	philo_eat(t_philo *philo)
 // readだけならmutexの必要なし
 static int	philo_sleep(t_philo *philo)
 {
+	int			error;
 	const int	time_to_eat_ms = philo->e->args.time_to_eat_ms;
 	const int	time_to_sleep_ms = philo->e->args.time_to_sleep_ms;
 
 	philo->state = PH_SLEEPING;
-	if (philo_log(philo, "is sleeping", NULL) < 0)
-		return (-1);
-	msleep_since(philo->last_eat_at, time_to_eat_ms + time_to_sleep_ms);
-	return (0);
+	error = unsafe_log_action(philo, "is sleeping", NULL);
+	if (error == 0)
+		msleep_since(philo->last_eat_at, time_to_eat_ms + time_to_sleep_ms);
+	return (error);
 }
 
 // If N is odd, N = 2k + 1, initial usleep should be (k * id) / N
@@ -112,10 +113,10 @@ static int	philo_think(t_philo *philo)
 	const int	k = philo->e->args.num_philo / 2;
 	const int	initial_slot = (k * philo->id) % n;
 
-	error = philo_log(philo, "is thinking", NULL);
+	philo->state = PH_THINKING;
+	error = unsafe_log_action(philo, "is thinking", NULL);
 	if (error == 0)
 	{
-		philo->state = PH_THINKING;
 		if (philo->eat_count == 0)
 			msleep_since(philo->last_eat_at, time_to_eat_ms * initial_slot / k);
 		else
