@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:02:53 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 23:19:23 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/21 14:18:20 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,9 @@ static int	philo_eat(t_philo *philo)
 		philo->eat_count++;
 		error = unsafe_log_action(philo, "is eating", &philo->last_eat_at);
 		pthread_mutex_unlock(&philo->mtx);
+		philo->next_eat_at = timeadd_msec(
+				philo->next_eat_at,
+				philo->e->optimal_interval_ms);
 		if (error == 0)
 			msleep_since(philo->last_eat_at, philo->e->args.time_to_eat_ms);
 		pthread_mutex_unlock(&philo->high->mtx);
@@ -91,13 +94,12 @@ static int	philo_eat(t_philo *philo)
 static int	philo_sleep(t_philo *philo)
 {
 	int			error;
-	const int	time_to_eat_ms = philo->e->args.time_to_eat_ms;
 	const int	time_to_sleep_ms = philo->e->args.time_to_sleep_ms;
 
 	philo->state = PH_SLEEPING;
-	error = unsafe_log_action(philo, "is sleeping", NULL);
+	error = unsafe_log_action(philo, "is sleeping", &philo->last_sleep_at);
 	if (error == 0)
-		msleep_since(philo->last_eat_at, time_to_eat_ms + time_to_sleep_ms);
+		msleep_since(philo->last_sleep_at, time_to_sleep_ms);
 	return (error);
 }
 
@@ -106,19 +108,10 @@ static int	philo_sleep(t_philo *philo)
 static int	philo_think(t_philo *philo)
 {
 	int			error;
-	const int	time_to_eat_ms = philo->e->args.time_to_eat_ms;
-	const int	n = philo->e->args.num_philo;
-	const int	k = philo->e->args.num_philo / 2;
-	const int	initial_slot = (k * philo->id) % n;
 
 	philo->state = PH_THINKING;
 	error = unsafe_log_action(philo, "is thinking", NULL);
 	if (error == 0)
-	{
-		if (philo->eat_count == 0)
-			msleep_since(philo->last_eat_at, time_to_eat_ms * initial_slot / k);
-		else
-			msleep_since(philo->last_eat_at, time_to_eat_ms * n / k);
-	}
+		usleep_until(philo->next_eat_at);
 	return (error);
 }
