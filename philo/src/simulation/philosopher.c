@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:02:53 by susami            #+#    #+#             */
-/*   Updated: 2022/10/21 14:18:20 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/22 00:49:01 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ static int	philo_eat(t_philo *philo)
 		error = unsafe_log_action(philo, "is eating", &philo->last_eat_at);
 		pthread_mutex_unlock(&philo->mtx);
 		philo->next_eat_at = timeadd_msec(
-				philo->next_eat_at,
+				philo->last_eat_at,
 				philo->e->optimal_interval_ms);
 		if (error == 0)
 			msleep_since(philo->last_eat_at, philo->e->args.time_to_eat_ms);
