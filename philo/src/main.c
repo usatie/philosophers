@@ -6,13 +6,11 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 18:16:33 by susami            #+#    #+#             */
-/*   Updated: 2022/10/20 23:18:56 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/23 08:23:32 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
 #include <stdlib.h>
-#include "libftsubset.h"
 #include "simulation.h"
 #include "argparse.h"
 #include "philo.h"
