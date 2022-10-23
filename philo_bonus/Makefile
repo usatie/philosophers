@@ -6,7 +6,7 @@
 #    By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 18:48:58 by susami            #+#    #+#              #
-#    Updated: 2022/10/23 09:19:04 by susami           ###   ########.fr        #
+#    Updated: 2022/10/23 15:55:50 by susami           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,7 @@ SRCS		=	$(SRC_DIR)/main.c							\
 				$(SRC_DIR)/init.c							\
 				$(SRC_DIR)/util/time.c						\
 				$(SRC_DIR)/util/sleep.c						\
+				$(SRC_DIR)/util/err_exit.c					\
 				$(SRC_DIR)/argparse/argparse.c				\
 				$(SRC_DIR)/libftsubset/ft_isdigit.c			\
 				$(SRC_DIR)/libftsubset/ft_isspace.c			\
@@ -41,6 +42,10 @@ SRCS		=	$(SRC_DIR)/main.c							\
 				$(SRC_DIR)/libftsubset/ft_strncmp.c			\
 				$(SRC_DIR)/libftsubset/ft_strtol.c			\
 				$(SRC_DIR)/libftsubset/ft_putstr_fd.c		\
+				$(SRC_DIR)/simulation/monitor.c				\
+				$(SRC_DIR)/simulation/philosopher.c			\
+				$(SRC_DIR)/simulation/unsafe_philosopher.c	\
+				$(SRC_DIR)/simulation/simulation.c			\
 
 
 OBJ_DIR		=	objs
