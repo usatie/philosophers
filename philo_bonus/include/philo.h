@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/23 09:05:00 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/23 09:18:24 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ enum e_pstate {
 struct s_philo {
 	int				id;
 	pid_t			pid;
-	sem_t			fork;
 
 	int				eat_count;
 	t_timeval		last_eat_at;
@@ -66,6 +65,7 @@ struct s_philo {
 	enum e_pstate	state;
 
 	t_env			*e;
+	sem_t			*forks;
 };
 
 struct s_monitor {
@@ -85,6 +85,7 @@ struct s_args {
 struct s_env {
 	t_monitor	monitor;
 	t_philo		philosophers[MAX_PHILO];
+	sem_t		*forks;
 	t_args		args;
 	t_timeval	started_at;
 	int			optimal_interval_ms;

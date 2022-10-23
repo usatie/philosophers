@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 15:13:06 by susami            #+#    #+#             */
-/*   Updated: 2022/10/23 09:06:49 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/23 09:19:53 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static int	usage_err(void)
 		"time_to_sleep [number_of_times_each_philosopher_must_eat]\n"
 		"\n"
 		"DESCRIPTION:\n"
-		"  - number_of_philosophers is valid between 2 to MAX_PHILO.\n"
+		"  - number_of_philosophers is valid between 1 to MAX_PHILO.\n"
 		"    (Default value for MAX_PHILO is 200.)\n"
 		"  - number_of_times_each_philosopher_must_eat must be non-zero\n"
 		"    value. When it is negative or not specified, the simulation\n"

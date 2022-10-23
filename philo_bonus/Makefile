@@ -6,7 +6,7 @@
 #    By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 18:48:58 by susami            #+#    #+#              #
-#    Updated: 2022/10/23 08:25:35 by susami           ###   ########.fr        #
+#    Updated: 2022/10/23 09:19:04 by susami           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,6 +31,7 @@ SRCDIRS		=	$(shell find $(SRC_DIR) -type d)
 INCLUDES 	+=	$(addprefix -I,$(SRCDIRS))
 
 SRCS		=	$(SRC_DIR)/main.c							\
+				$(SRC_DIR)/init.c							\
 				$(SRC_DIR)/util/time.c						\
 				$(SRC_DIR)/util/sleep.c						\
 				$(SRC_DIR)/argparse/argparse.c				\
