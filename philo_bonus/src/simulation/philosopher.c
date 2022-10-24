@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 14:15:42 by susami            #+#    #+#             */
-/*   Updated: 2022/10/24 15:36:28 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/24 18:58:22 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,27 +15,25 @@
 #include "simulation.h"
 
 static bool	is_hungry(t_philo *philo);
-static void	eat(t_philo *philo);
-static void	sleep(t_philo *philo);
-static void	think(t_philo *philo);
 
 void	*philosopher_func(void *arg)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	usleep_until(philo->e->started_at);
+	usleep_until(philo->next_eat_at);
 	while (is_hungry(philo))
 	{
 		if (philo->state == PH_THINKING)
-			eat(philo);
+			philo_eat(philo);
 		else if (philo->state == PH_EATING)
-			sleep(philo);
+			philo_sleep(philo);
 		else if (philo->state == PH_SLEEPING)
-			think(philo);
+			philo_think(philo);
 		else
 			err_exit("Unknown philosopher state");
 	}
+	putdown_forks(philo);
 	exit(EXIT_SUCCESS);
 }
 
@@ -50,23 +48,8 @@ static bool	is_hungry(t_philo *philo)
 	const int	eat_count = philo->eat_count;
 	const int	max_eat = philo->e->args.max_eat;
 
-	return (eat_count < max_eat);
-}
-
-static void	eat(t_philo *philo)
-{
-	philo->state = PH_EATING;
-	log_action(philo, "is eating", NULL, NULL);
-}
-
-static void	sleep(t_philo *philo)
-{
-	philo->state = PH_SLEEPING;
-	log_action(philo, "is sleeping", NULL, NULL);
-}
-
-static void	think(t_philo *philo)
-{
-	philo->state = PH_THINKING;
-	log_action(philo, "is thinking", NULL, NULL);
+	if (max_eat < 0)
+		return (true);
+	else
+		return (eat_count < max_eat);
 }

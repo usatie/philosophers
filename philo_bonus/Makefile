@@ -6,7 +6,7 @@
 #    By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 18:48:58 by susami            #+#    #+#              #
-#    Updated: 2022/10/24 15:55:58 by susami           ###   ########.fr        #
+#    Updated: 2022/10/24 18:58:39 by susami           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,7 @@ SRCS		=	$(SRC_DIR)/main.c							\
 				$(SRC_DIR)/simulation/simulation.c			\
 				$(SRC_DIR)/simulation/log.c					\
 				$(SRC_DIR)/simulation/philosopher.c			\
+				$(SRC_DIR)/simulation/philosopher_action.c	\
 				$(SRC_DIR)/simulation/monitor.c				\
 				$(SRC_DIR)/libftsubset/ft_isdigit.c			\
 				$(SRC_DIR)/libftsubset/ft_isspace.c			\

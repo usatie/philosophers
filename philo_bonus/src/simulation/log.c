@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 13:49:42 by susami            #+#    #+#             */
-/*   Updated: 2022/10/24 16:35:43 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/24 23:02:22 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ void	assert_alive(t_philo *philo, t_timeval *tp)
 		log_dead(philo, ts);
 		exit(EXIT_FAILURE);
 	}
-	else
-		exit(EXIT_SUCCESS);
 }
 
 // When philo is dead, never release the log/log_dead lock so that 
@@ -60,7 +58,7 @@ void	log_action(t_philo *philo, char *s, t_timeval *tp, t_logfunc *f)
 	if (tp)
 		*tp = now;
 	if (f)
-		f(philo, now);
+		f(philo);
 	sem_post_exit_on_err(philo->e->log);
 }
 
@@ -79,11 +77,15 @@ static void	log_dead(t_philo *philo, int ts)
 }
 
 static bool	is_hungry(t_philo *philo)
+	__attribute__((disable_sanitizer_instrumentation))
 {
 	const int	eat_count = philo->eat_count;
 	const int	max_eat = philo->e->args.max_eat;
 
-	return (eat_count < max_eat);
+	if (max_eat < 0)
+		return (true);
+	else
+		return (eat_count < max_eat);
 }
 
 static bool	is_alive(t_philo *philo, t_timeval t)

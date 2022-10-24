@@ -6,10 +6,11 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 15:06:19 by susami            #+#    #+#             */
-/*   Updated: 2022/10/24 15:41:31 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/24 23:20:39 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
@@ -37,6 +38,7 @@ void	start_simulation(t_env *e)
 			exit(philo_simulation(&e->philosophers[i]));
 		else
 			e->philosophers[i].pid = child_pid;
+		printf("forked child_pid: %d\n", child_pid);
 		i++;
 	}
 }
@@ -54,8 +56,15 @@ void	wait_simulation_ends(t_env *e)
 			kill_philosophers_processes(e);
 			return ;
 		}
+		sem_post_exit_on_err(e->log);
 	}
 }
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                          File Private Functions                            */
+/*                                                                            */
+/* ************************************************************************** */
 
 static int	philo_simulation(t_philo *philo)
 {
@@ -77,7 +86,7 @@ static void	kill_philosophers_processes(t_env *e)
 	i = 0;
 	while (i < e->args.num_philo)
 	{
-		kill(e->philosophers[i].pid, SIGKILL);
+		kill(e->philosophers[i].pid, SIGQUIT);
 		i++;
 	}
 }
