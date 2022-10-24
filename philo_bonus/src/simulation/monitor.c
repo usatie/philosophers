@@ -1,29 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/23 08:24:13 by susami            #+#    #+#             */
-/*   Updated: 2022/10/24 15:34:20 by susami           ###   ########.fr       */
+/*   Created: 2022/10/24 14:29:45 by susami            #+#    #+#             */
+/*   Updated: 2022/10/24 15:03:51 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include "argparse.h"
-#include "philo.h"
+#include <unistd.h>
 #include "util.h"
 #include "simulation.h"
 
-int	main(int argc, char *argv[])
-{
-	t_env	e;
+#define MONITOR_INTERVAL_USEC 1000
 
-	if (argparse(&e.args, argc, argv) == ARGPARSE_ERROR)
-		err_exit("argparse()");
-	init_env(&e);
-	start_simulation(&e);
-	wait_simulation_ends(&e);
-	return (EXIT_SUCCESS);
+void	*monitor_func(void *arg)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)arg;
+	usleep_until(philo->e->started_at);
+	while (true)
+	{
+		sem_wait_exit_on_err(philo->log);
+		sem_wait_exit_on_err(philo->self);
+		assert_alive(philo, NULL);
+		sem_post_exit_on_err(philo->self);
+		sem_post_exit_on_err(philo->log);
+		usleep(MONITOR_INTERVAL_USEC);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/24 12:51:06 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/24 16:07:37 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,35 @@ void	init_env(t_env *e);
 /*                                                                            */
 /* ************************************************************************** */
 
-enum e_pstate {
+typedef enum e_pstate {
 	PH_EATING,
 	PH_SLEEPING,
 	PH_THINKING,
-};
+}	t_state;
 
+/*
+	- eat_count      : will be read from monitor thread (need `self` semaphore)
+	- last_eat_at    : will be read from monitor thread (need `self` semaphore)
+	- last_sleep_at  : philo thread's private var
+	- next_eat_at    : philo thread's private var
+	- state          : philo thread's private var
+*/
 struct s_philo {
-	int	id;
+	int			id;
+	pid_t		pid;
+	pthread_t	tid;
+	pthread_t	monitor_tid;
+
+	int			eat_count;
+	t_timeval	last_eat_at;
+	t_timeval	last_sleep_at;
+	t_timeval	next_eat_at;
+	t_state		state;
+
+	sem_t		*self;
+	sem_t		*log;
+	sem_t		*log_dead;
+	t_env		*e;
 };
 
 struct s_args {
@@ -64,6 +85,11 @@ struct s_env {
 	t_args		args;
 	t_timeval	started_at;
 	int			optimal_interval_ms;
+	t_philo		philosophers[MAX_PHILO];
+	sem_t		*forks;
+	sem_t		*waiters;
+	sem_t		*log;
+	sem_t		*log_dead;
 };
 
 #endif
