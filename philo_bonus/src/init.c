@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 09:07:28 by susami            #+#    #+#             */
-/*   Updated: 2022/10/24 16:07:57 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/24 16:29:17 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,9 @@
 #define SEMAPHORE_LOG       "log"
 #define SEMAPHORE_LOG_DEAD  "log_dead"
 
-static int	calc_optimal_interval_ms(t_args args);
-static void	init_philosophers(t_env *e);
+static int			calc_optimal_interval_ms(t_args args);
+static t_timeval	calc_initial_eat_at(int philo_id, t_env *e);
+static void			init_philosophers(t_env *e);
 
 void	init_env(t_env *e)
 {
@@ -81,8 +82,21 @@ static int	calc_optimal_interval_ms(t_args args)
 	const int	k = args.num_philo / 2;
 	int			interval;
 
+	if (k == 0)
+		return (args.time_to_eat_ms + args.time_to_sleep_ms);
 	interval = args.time_to_eat_ms * n / k;
 	if (interval < args.time_to_eat_ms + args.time_to_sleep_ms)
 		interval = args.time_to_eat_ms + args.time_to_sleep_ms;
 	return (interval);
+}
+
+// On each 1/k time_to_eat_ms frame, 1 philosopher start eating.
+static t_timeval	calc_initial_eat_at(int philo_id, t_env *e)
+{
+	const int	time_to_eat_ms = e->args.time_to_eat_ms;
+	const int	k = e->args.num_philo / 2;
+
+	if (k == 0)
+		return (e->started_at);
+	return (timeadd_msec(e->started_at, time_to_eat_ms * (philo_id - 1) / k));
 }
