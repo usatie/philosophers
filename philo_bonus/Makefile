@@ -6,7 +6,7 @@
 #    By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 18:48:58 by susami            #+#    #+#              #
-#    Updated: 2022/10/23 16:38:35 by susami           ###   ########.fr        #
+#    Updated: 2022/10/24 12:52:14 by susami           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,10 +45,6 @@ SRCS		=	$(SRC_DIR)/main.c							\
 				$(SRC_DIR)/libftsubset/ft_strlcat.c			\
 				$(SRC_DIR)/libftsubset/ft_calloc.c			\
 				$(SRC_DIR)/libftsubset/ft_itoa.c			\
-				$(SRC_DIR)/simulation/monitor.c				\
-				$(SRC_DIR)/simulation/philosopher.c			\
-				$(SRC_DIR)/simulation/unsafe_philosopher.c	\
-				$(SRC_DIR)/simulation/simulation.c			\
 
 
 OBJ_DIR		=	objs

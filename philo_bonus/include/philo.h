@@ -6,16 +6,17 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/23 13:31:19 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/24 12:51:06 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
+# include <stdbool.h>
 # include <sys/time.h>
 # include <semaphore.h>
-# include <stdbool.h>
+# include <pthread.h>
 # ifndef MAX_PHILO
 #  define MAX_PHILO 200
 # endif
@@ -47,31 +48,8 @@ enum e_pstate {
 	PH_THINKING,
 };
 
-/*
-	- eat_count      : will be read from monitor thread (need mutex)
-	- last_eat_at    : will be read from monitor thread (need mutex)
-	- last_sleep_at  : philo thread's private var
-	- next_eat_at    : philo thread's private var
-	- state          : philo thread's private var
-*/
 struct s_philo {
-	int				id;
-	pid_t			pid;
-
-	int				eat_count;
-	t_timeval		last_eat_at;
-	t_timeval		last_sleep_at;
-	t_timeval		next_eat_at;
-	enum e_pstate	state;
-
-	t_env			*e;
-	sem_t			*sem;
-};
-
-struct s_monitor {
-	pid_t	pid;
-	sem_t	*sem;
-	bool	is_dead;
+	int	id;
 };
 
 struct s_args {
@@ -83,10 +61,6 @@ struct s_args {
 };
 
 struct s_env {
-	t_monitor	monitor;
-	t_philo		philosophers[MAX_PHILO];
-	sem_t		*forks;
-	sem_t		*waiters;
 	t_args		args;
 	t_timeval	started_at;
 	int			optimal_interval_ms;
