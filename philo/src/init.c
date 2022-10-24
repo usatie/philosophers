@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 11:06:06 by susami            #+#    #+#             */
-/*   Updated: 2022/10/21 19:12:14 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/24 16:10:14 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,8 @@ static int	calc_optimal_interval_ms(t_args args)
 	const int	k = args.num_philo / 2;
 	int			interval;
 
+	if (k == 0)
+		return (args.time_to_eat_ms + args.time_to_sleep_ms);
 	interval = args.time_to_eat_ms * n / k;
 	if (interval < args.time_to_eat_ms + args.time_to_sleep_ms)
 		interval = args.time_to_eat_ms + args.time_to_sleep_ms;
@@ -117,5 +119,7 @@ static t_timeval	calc_initial_eat_at(int philo_id, t_env *e)
 	const int	k = e->args.num_philo / 2;
 	const int	initial_slot = (k * philo_id) % n;
 
+	if (k == 0)
+		return (e->started_at);
 	return (timeadd_msec(e->started_at, time_to_eat_ms * initial_slot / k));
 }
