@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 13:49:42 by susami            #+#    #+#             */
-/*   Updated: 2022/10/24 15:05:36 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/24 16:35:43 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	log_action(t_philo *philo, char *s, t_timeval *tp, t_logfunc *f)
 	t_timeval	now;
 	int			ts;
 
-	sem_wait_exit_on_err(philo->log);
+	sem_wait_exit_on_err(philo->e->log);
 	assert_alive(philo, &now);
 	ts = timediff_msec(philo->e->started_at, now);
 	printf("%d %d %s\n", ts, philo->id, s);
@@ -61,7 +61,7 @@ void	log_action(t_philo *philo, char *s, t_timeval *tp, t_logfunc *f)
 		*tp = now;
 	if (f)
 		f(philo, now);
-	sem_post_exit_on_err(philo->log);
+	sem_post_exit_on_err(philo->e->log);
 }
 
 /* ************************************************************************** */
@@ -74,7 +74,7 @@ void	log_action(t_philo *philo, char *s, t_timeval *tp, t_logfunc *f)
 // others will not print any message after dead message.
 static void	log_dead(t_philo *philo, int ts)
 {
-	sem_wait_exit_on_err(philo->log_dead);
+	sem_wait_exit_on_err(philo->e->log_dead);
 	printf("%d %d died\n", ts, philo->id);
 }
 

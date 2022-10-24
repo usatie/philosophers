@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:03:03 by susami            #+#    #+#             */
-/*   Updated: 2022/10/24 16:07:37 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/24 16:35:19 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,6 @@ struct s_philo {
 	t_state		state;
 
 	sem_t		*self;
-	sem_t		*log;
-	sem_t		*log_dead;
 	t_env		*e;
 };
 
