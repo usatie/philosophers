@@ -1,36 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   err_exit.c                                         :+:      :+:    :+:   */
+/*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/23 15:54:14 by susami            #+#    #+#             */
-/*   Updated: 2022/10/23 22:23:32 by susami           ###   ########.fr       */
+/*   Created: 2022/04/06 13:51:04 by susami            #+#    #+#             */
+/*   Updated: 2022/10/23 16:38:06 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h> // STDERR_FILENO
-#include <stdlib.h>
 #include "libftsubset.h"
-#include "util.h"
 
-void	err_exit(char *msg)
+size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 {
-	ft_putstr_fd("[err_exit] ", STDERR_FILENO);
-	ft_putstr_fd(msg, STDERR_FILENO);
-	ft_putstr_fd("\n", STDERR_FILENO);
-	exit(EXIT_FAILURE);
-}
+	size_t	cnt;
 
-void	sem_wait_exit_on_err(sem_t *sem)
-{
-	if (sem_wait(sem) < 0)
-		err_exit("sem_wait()");
-}
-
-void	sem_post_exit_on_err(sem_t *sem)
-{
-	if (sem_post(sem) < 0)
-		err_exit("sem_post()");
+	if (dstsize == 0 || ft_strlen(dst) >= dstsize)
+		return (dstsize + ft_strlen(src));
+	if (ft_strlen(src) == 0)
+		return (ft_strlen(dst));
+	cnt = 0;
+	while (*dst && cnt < dstsize - 1)
+	{
+		dst++;
+		cnt++;
+	}
+	while (*src && cnt < dstsize - 1)
+	{
+		*dst = *src;
+		dst++;
+		src++;
+		cnt++;
+	}
+	*dst = '\0';
+	while (*src++)
+		cnt++;
+	return (cnt);
 }

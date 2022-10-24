@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 18:34:17 by susami            #+#    #+#             */
-/*   Updated: 2022/10/23 15:59:48 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/23 22:23:53 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,6 @@ void		msleep_since(t_timeval since, int milliseconds);
 
 // err_exit.c
 void		err_exit(char *msg);
+void		sem_wait_exit_on_err(sem_t *sem);
+void		sem_post_exit_on_err(sem_t *sem);
 #endif
