@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 13:49:42 by susami            #+#    #+#             */
-/*   Updated: 2022/10/24 23:02:22 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/25 18:21:13 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ static void	log_dead(t_philo *philo, int ts)
 }
 
 static bool	is_hungry(t_philo *philo)
-	__attribute__((disable_sanitizer_instrumentation))
 {
 	const int	eat_count = philo->eat_count;
 	const int	max_eat = philo->e->args.max_eat;
