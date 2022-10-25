@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 08:24:13 by susami            #+#    #+#             */
-/*   Updated: 2022/10/25 18:48:54 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/25 18:56:38 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,6 @@ int	main(int argc, char *argv[])
 	init_env(&e);
 	start_simulation(&e);
 	wait_simulation_ends(&e);
+	deinit_env(&e);
 	return (EXIT_SUCCESS);
 }

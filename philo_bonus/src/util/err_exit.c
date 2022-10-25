@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 15:54:14 by susami            #+#    #+#             */
-/*   Updated: 2022/10/24 22:28:53 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/25 18:55:06 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,12 @@ sem_t	*sem_open_exit_on_err(const char *name, int value)
 		err_exit("sem_open()");
 	sem_unlink(name);
 	return (sem);
+}
+
+void	sem_close_exit_on_err(sem_t *sem)
+{
+	if (sem_close(sem) < 0)
+		err_exit("sem_close()");
 }
 
 void	sem_wait_exit_on_err(sem_t *sem)

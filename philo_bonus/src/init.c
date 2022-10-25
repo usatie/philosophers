@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 09:07:28 by susami            #+#    #+#             */
-/*   Updated: 2022/10/25 17:32:16 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/25 19:07:13 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "util.h"
 #include "philo.h"
 
+#define INITIALIZE_INTERVAL_SEC  2
 #define SEMAPHORE_LOG            "log"
 #define SEMAPHORE_LOG_DEAD       "log_dead"
 #define SEMAPHORE_PHILO          "philosopher"
@@ -33,7 +34,7 @@ void	init_env(t_env *e)
 	const int	num_waiters = e->args.num_philo - 1;
 
 	gettimeofday(&e->started_at, NULL);
-	e->started_at.tv_sec += 1;
+	e->started_at.tv_sec += INITIALIZE_INTERVAL_SEC;
 	e->started_at.tv_usec = 0;
 	e->optimal_interval_ms = calc_optimal_interval_ms(e->args);
 	e->forks = sem_open_exit_on_err(SEMAPHORE_FORKS, e->args.num_philo);
