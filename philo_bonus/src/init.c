@@ -6,7 +6,7 @@
 /*   By: susami <susami@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 09:07:28 by susami            #+#    #+#             */
-/*   Updated: 2022/10/24 18:53:40 by susami           ###   ########.fr       */
+/*   Updated: 2022/10/25 17:32:16 by susami           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@
 #include "util.h"
 #include "philo.h"
 
-#define SEMAPHORE_LOG       "log"
-#define SEMAPHORE_LOG_DEAD  "log_dead"
-#define SEMAPHORE_PHILO     "philosopher"
-#define SEMAPHORE_WAITERS   "waiters"
-#define SEMAPHORE_FORKS     "forks"
+#define SEMAPHORE_LOG            "log"
+#define SEMAPHORE_LOG_DEAD       "log_dead"
+#define SEMAPHORE_PHILO          "philosopher"
+#define SEMAPHORE_WAITERS        "waiters"
+#define SEMAPHORE_FORKS          "forks"
 #define MAX_NAME_LEN 128
 
 static int			calc_optimal_interval_ms(t_args args);
